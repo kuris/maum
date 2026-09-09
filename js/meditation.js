@@ -14,45 +14,119 @@
   let phaseTimer = 0;
   let soundEnabled = true;
   let currentTechnique = 'box'; // 'box' (4-4-4-4) or 'calm' (4-7-8)
+  let selectedBowlType = 'clear'; // 'clear' (12s bell) | 'deep' (30s low resonance)
 
-  // Web Audio API를 이용한 싱잉볼(Tibetan Singing Bowl) 화음 차임 생성
-  function playSingingBowlChime() {
+  // 실제 싱잉볼 고음질 음원 경로
+  const BOWL_SOUNDS = {
+    clear: '/assets/audio/singing-bowl.mp3',
+    deep: '/assets/audio/singing-bowl-deep.mp3'
+  };
+
+  // 활성화된 오디오 인스턴스 관리
+  let activeAudioInstances = [];
+
+  // 오디오 프리로드
+  function preloadBowlSounds() {
+    try {
+      Object.values(BOWL_SOUNDS).forEach(url => {
+        const audio = new Audio();
+        audio.preload = 'auto';
+        audio.src = url;
+      });
+    } catch (_) {}
+  }
+  preloadBowlSounds();
+
+  // 모든 재생 중인 소리 부드럽게 페이드아웃
+  function fadeOutActiveSounds() {
+    activeAudioInstances.forEach(audio => {
+      try {
+        let v = audio.volume;
+        const timer = setInterval(() => {
+          v -= 0.15;
+          if (v <= 0.05) {
+            audio.pause();
+            clearInterval(timer);
+          } else {
+            audio.volume = Math.max(0, v);
+          }
+        }, 50);
+      } catch (_) {
+        audio.pause();
+      }
+    });
+    activeAudioInstances = [];
+  }
+
+  // 실제 싱잉볼 음원 재생 (실패 시 Web Audio 하모닉 합성 폴백)
+  function playSingingBowlChime(typeOverride, volumeRatio) {
     if (!soundEnabled) return;
+    const bowlType = typeOverride || selectedBowlType;
+    const soundUrl = BOWL_SOUNDS[bowlType] || BOWL_SOUNDS.clear;
+    const vol = typeof volumeRatio === 'number' ? volumeRatio : 0.85;
+
+    try {
+      const audio = new Audio(soundUrl);
+      audio.volume = Math.max(0.05, Math.min(1.0, vol));
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            activeAudioInstances.push(audio);
+            audio.onended = () => {
+              activeAudioInstances = activeAudioInstances.filter(a => a !== audio);
+            };
+          })
+          .catch(err => {
+            console.warn('[Meditation] Real audio play blocked, falling back to Web Audio:', err);
+            playSyntheticSingingBowl(vol);
+          });
+      }
+    } catch (e) {
+      console.warn('[Meditation] Audio playback error, fallback to synth:', e);
+      playSyntheticSingingBowl(vol);
+    }
+  }
+
+  // Web Audio API를 이용한 정밀 싱잉볼 물리 합성 (오프라인/폴백용)
+  function playSyntheticSingingBowl(volumeRatio) {
     try {
       const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtxClass) return;
-      if (!audioCtx) {
-        audioCtx = new AudioCtxClass();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (!audioCtx) audioCtx = new AudioCtxClass();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
 
       const now = audioCtx.currentTime;
-      // 기본 주파수 및 은은한 오버톤 배음 (432Hz 평화의 주파수 기반)
-      const freqs = [432, 864, 1296, 2160];
-      const gains = [0.4, 0.15, 0.08, 0.03];
+      const vol = typeof volumeRatio === 'number' ? volumeRatio : 0.8;
+      
+      // 싱잉볼 고유의 비정수 배음 및 비트 진동 (432Hz 평화의 주파수 기반)
+      const harmonics = [
+        { f: 432, g: 0.35 * vol, type: 'sine', decay: 4.5 },
+        { f: 433.5, g: 0.3 * vol, type: 'sine', decay: 4.2 }, // 1.5Hz 어쿠스틱 비팅 맥동
+        { f: 1192, g: 0.12 * vol, type: 'triangle', decay: 3.5 }, // 2.76x 금속 차임 고주파
+        { f: 2332, g: 0.05 * vol, type: 'sine', decay: 2.2 }
+      ];
 
-      freqs.forEach((f, idx) => {
+      harmonics.forEach(h => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        osc.type = idx === 0 ? 'sine' : 'triangle';
-        osc.frequency.setValueAtTime(f, now);
+        osc.type = h.type;
+        osc.frequency.setValueAtTime(h.f, now);
 
-        // 부드러운 시작(Attack)과 긴 감쇠(Decay)
-        gain.gain.setValueAtTime(0.001, now);
-        gain.gain.exponentialRampToValueAtTime(gains[idx], now + 0.08);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(h.g, now + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + h.decay);
 
         osc.connect(gain);
         gain.connect(audioCtx.destination);
 
         osc.start(now);
-        osc.stop(now + 4.0);
+        osc.stop(now + h.decay + 0.2);
       });
     } catch (e) {
-      console.warn('[Meditation] Audio chime skipped:', e);
+      console.warn('[Meditation] Web Audio fallback skipped:', e);
     }
   }
 
@@ -146,12 +220,14 @@
     if (!isRunning) return;
     clearInterval(timerInterval);
     isRunning = false;
+    fadeOutActiveSounds();
     dispatchState('pause');
   }
 
   function resetBreathing() {
     clearInterval(timerInterval);
     isRunning = false;
+    fadeOutActiveSounds();
     remainingSeconds = totalDuration;
     phaseIndex = 0;
     phaseTimer = 0;
@@ -169,7 +245,8 @@
   function finishBreathing() {
     clearInterval(timerInterval);
     isRunning = false;
-    playSingingBowlChime();
+    // 완료 시 깊고 웅장한 여운의 싱잉볼 울림
+    playSingingBowlChime('deep', 1.0);
 
     const circle = document.querySelector('.breathing-circle-wrapper');
     if (circle) {
@@ -248,6 +325,11 @@
     toggleSound: toggleSound,
     isSoundEnabled: () => soundEnabled,
     isRunning: () => isRunning,
-    playChime: playSingingBowlChime
+    playChime: playSingingBowlChime,
+    setBowlType: (type) => {
+      if (BOWL_SOUNDS[type]) selectedBowlType = type;
+      return selectedBowlType;
+    },
+    getBowlType: () => selectedBowlType
   };
 })(window);

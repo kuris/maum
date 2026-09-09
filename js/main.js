@@ -155,6 +155,14 @@ function initHomeMeditation() {
     });
   }
 
+  const strikeHomeBtn = document.getElementById('med-strike-home-btn');
+  if (strikeHomeBtn) {
+    strikeHomeBtn.addEventListener('click', () => {
+      window.MaumMeditation.playChime(null, 1.0);
+      if (window.showToast) window.showToast('🪷 맑은 싱잉볼 소리와 함께 깊게 숨을 쉬어보세요.');
+    });
+  }
+
   // 시간 설정 (1분, 3분)
   modeBtns.forEach(btn => {
     btn.addEventListener('click', () => {

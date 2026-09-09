@@ -124,6 +124,20 @@
         </button>
       </div>
 
+      <!-- 싱잉볼 음색 선택 & 직접 울리기 -->
+      <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px; flex-wrap: wrap;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">실제 싱잉볼 음색:</span>
+        <button type="button" class="btn-chip active" id="bowl-clear-btn" style="cursor: pointer; padding: 6px 14px; font-size: 0.85rem; border-radius: 999px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main);">
+          🔔 맑은 소리 (12초)
+        </button>
+        <button type="button" class="btn-chip" id="bowl-deep-btn" style="cursor: pointer; padding: 6px 14px; font-size: 0.85rem; border-radius: 999px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main);">
+          🧘 깊은 울림 (30초)
+        </button>
+        <button type="button" class="icon-btn" id="strike-bowl-btn" title="실제 싱잉볼 직접 타종하기" style="margin-left: 6px;">
+          <span>🪷</span> <span>싱잉볼 울리기</span>
+        </button>
+      </div>
+
       <!-- 명상 안내 팁 -->
       <div style="margin-top: 48px; padding-top: 24px; border-top: 1px dashed var(--border); text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
         <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
@@ -211,6 +225,42 @@
           startBtn.innerHTML = '<span>▶️</span> <span>명상 시작</span>';
         });
       });
+
+      // 싱잉볼 음색 선택 및 직접 울리기
+      const bowlClearBtn = document.getElementById('bowl-clear-btn');
+      const bowlDeepBtn = document.getElementById('bowl-deep-btn');
+      const strikeBowlBtn = document.getElementById('strike-bowl-btn');
+
+      if (bowlClearBtn && bowlDeepBtn) {
+        bowlClearBtn.addEventListener('click', () => {
+          bowlClearBtn.classList.add('active');
+          bowlClearBtn.style.background = 'var(--sage-light)';
+          bowlClearBtn.style.borderColor = 'var(--sage-dark)';
+          bowlDeepBtn.classList.remove('active');
+          bowlDeepBtn.style.background = 'var(--card-bg)';
+          bowlDeepBtn.style.borderColor = 'var(--border)';
+          window.MaumMeditation.setBowlType('clear');
+          window.MaumMeditation.playChime('clear', 0.8);
+        });
+
+        bowlDeepBtn.addEventListener('click', () => {
+          bowlDeepBtn.classList.add('active');
+          bowlDeepBtn.style.background = 'var(--sage-light)';
+          bowlDeepBtn.style.borderColor = 'var(--sage-dark)';
+          bowlClearBtn.classList.remove('active');
+          bowlClearBtn.style.background = 'var(--card-bg)';
+          bowlClearBtn.style.borderColor = 'var(--border)';
+          window.MaumMeditation.setBowlType('deep');
+          window.MaumMeditation.playChime('deep', 0.8);
+        });
+      }
+
+      if (strikeBowlBtn) {
+        strikeBowlBtn.addEventListener('click', () => {
+          window.MaumMeditation.playChime(null, 1.0);
+          if (window.showToast) window.showToast('🪷 맑고 깊은 싱잉볼 소리에 귀를 기울여보세요.');
+        });
+      }
 
       window.addEventListener('maum:meditation-state', (e) => {
         if (e.detail.status === 'finish') {
