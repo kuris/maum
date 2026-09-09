@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음아 놀자 - 오늘의 마음 글과 짧은 명상</title>
+  <meta name="description" content="불교의 지혜와 짧은 명상 문구로 하루의 마음을 차분히 돌아보는 무료 마음챙김 도구입니다. 비로그인으로도 자유롭게 호흡 명상과 감정 일기, 지혜 카드를 이용할 수 있습니다.">
+  <link rel="canonical" href="https://maum.chatgpts.kr/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="마음아 놀자">
+  <meta property="og:title" content="마음아 놀자 - 오늘의 마음 글과 짧은 명상">
+  <meta property="og:description" content="불교의 지혜와 마음챙김, 호흡 명상과 따뜻한 감정 성찰 도구">
+  <meta property="og:url" content="https://maum.chatgpts.kr/">
+
+  <!-- Favicon (Lotus emoji) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%AA%B7%3C%2Ftext%3E%3C%2Fsvg%3E">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/style.css?v=20260909">
+  <link rel="stylesheet" href="/css/cg-auth.css?v=20260909">
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3321070604000141" crossorigin="anonymous"></script>
+
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-config.js?v=20260909"></script>
+  <script defer src="/js/cg-auth.js?v=20260909" data-service="maum" data-mount="#cg-auth-slot"></script>
+  <script defer src="/js/track.js?v=20260909" data-service="maum"></script>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 헤더 -->
+    <header class="site-head">
+      <a href="/" class="brand-logo" aria-label="마음아 놀자 홈으로">
+        <span class="logo-symbol">🪷</span>
+        <span>마음아 <span class="dot">놀자</span></span>
+      </a>
+      
+      <div class="header-right">
+        <!-- 로그인 위젯 마운트 슬롯 -->
+        <div id="cg-auth-slot"></div>
+
+        <!-- 패밀리 서비스 메뉴 -->
+        <div class="family-nav-wrap">
+          <button type="button" class="family-btn" id="family-btn">
+            다른 놀자 서비스 ▾
+          </button>
+          <div class="family-dropdown" id="family-dropdown">
+            <a href="https://hanja.chatgpts.kr" target="_blank" rel="noopener">📖 한자야 놀자</a>
+            <a href="https://voca.chatgpts.kr" target="_blank" rel="noopener">⚡ 단어야 놀자</a>
+            <a href="https://history.chatgpts.kr" target="_blank" rel="noopener">📜 역사야 놀자</a>
+            <a href="https://fortune.chatgpts.kr" target="_blank" rel="noopener">🔮 운세야 놀자</a>
+            <a href="https://mindtest.chatgpts.kr" target="_blank" rel="noopener">🧠 마인드테스트</a>
+            <a href="https://bible.chatgpts.kr" target="_blank" rel="noopener">✝️ 성경아 놀자</a>
+            <a href="https://work.chatgpts.kr" target="_blank" rel="noopener">💼 워크야 놀자</a>
+            <a href="https://money.chatgpts.kr" target="_blank" rel="noopener">💰 머니야 놀자</a>
+            <a href="https://tools.chatgpts.kr" target="_blank" rel="noopener">🛠️ 문서야 놀자</a>
+            <a href="https://chatgpts.kr" target="_blank" rel="noopener">🏠 chatgpts.kr</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 상단 칩스 네비게이션 -->
+    <nav class="nav-scroll" aria-label="메인 메뉴">
+      <a href="/" class="nav-chip active">🏠 홈</a>
+      <a href="/today" class="nav-chip">📜 오늘의 마음</a>
+      <a href="/meditation" class="nav-chip">🧘 호흡 명상</a>
+      <a href="/wisdom" class="nav-chip">🪷 불교 지혜</a>
+      <a href="/cards" class="nav-chip">🎴 마음 카드</a>
+      <a href="/record" class="nav-chip">📝 마음 기록장</a>
+      <a href="/my" class="nav-chip">👤 내 기록실</a>
+    </nav>
+
+    <!-- Hero 섹션 -->
+    <section class="hero-section">
+      <div class="hero-subtitle">
+        <span>🕊️</span> 고요한 쉼표가 필요한 당신을 위한 마음 도구
+      </div>
+      <h1 class="hero-title">오늘의 마음을<br>조용히 바라보는 시간</h1>
+      <p class="hero-desc">
+        불교의 따스한 지혜와 부드러운 1분 호흡으로 어깨의 긴장을 풀고 내면의 평화를 회복해보세요.
+      </p>
+      <div class="hero-actions">
+        <a href="#meditation-section" class="btn-primary">
+          <span>🧘</span> <span>1분 호흡 명상하기</span>
+        </a>
+        <a href="/today" class="btn-secondary">
+          <span>📜</span> <span>오늘의 성찰 읽기</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 1. 오늘의 마음 카드 -->
+    <section class="daily-card-container" id="today-card-mount">
+      <!-- js/main.js 에 의해 렌더링 -->
+      <div style="text-align: center; padding: 30px; color: var(--text-subtle);">
+        마음 글귀를 불러오는 중입니다...
+      </div>
+    </section>
+
+    <!-- 2. 호흡 명상 섹션 -->
+    <section class="meditation-box" id="meditation-section">
+      <div class="section-head">
+        <h2 class="section-title">
+          <span>🌿</span> <span>1분 마음챙김 호흡</span>
+        </h2>
+        <a href="/meditation" class="section-link">전체 화면으로 열기 →</a>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px;">
+        부풀어 오르는 원을 따라 숨을 들이쉬고, 줄어들 때 천천히 비워내세요.
+      </p>
+
+      <!-- 호흡 서클 애니메이션 -->
+      <div class="breathing-circle-wrapper ready">
+        <div class="circle-pulse-outer"></div>
+        <div class="circle-pulse-inner">
+          <div class="breath-phase-text" id="breath-phase-text">준비</div>
+          <div class="breath-timer-count" id="breath-timer-display">1:00</div>
+        </div>
+      </div>
+
+      <p id="breath-label-text" style="color: var(--sage-dark); font-weight: 600; font-size: 0.95rem; min-height: 24px;">
+        마음을 가라앉히고 호흡을 준비하세요
+      </p>
+
+      <!-- 컨트롤러 -->
+      <div class="meditation-controls">
+        <div class="mode-selector">
+          <button type="button" class="mode-btn active" data-seconds="60">1분</button>
+          <button type="button" class="mode-btn" data-seconds="180">3분</button>
+        </div>
+
+        <button type="button" class="btn-primary" id="med-start-btn">
+          <span>▶️</span> <span>명상 시작</span>
+        </button>
+
+        <button type="button" class="btn-secondary" id="med-reset-btn" title="처음부터">
+          <span>🔄</span> <span>초기화</span>
+        </button>
+
+        <button type="button" class="icon-btn" id="med-sound-btn" title="싱잉볼 소리 설정">
+          <span>🔔</span> <span>소리 켬</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. 오늘 마음 기록 (퀵 위젯) -->
+    <section class="quick-record-box">
+      <div class="section-head">
+        <h2 class="section-title">
+          <span>📝</span> <span>오늘 내 마음의 날씨는 어떤가요?</span>
+        </h2>
+        <a href="/record" class="section-link">자세히 기록하기 →</a>
+      </div>
+
+      <div class="emotion-grid" id="quick-mood-grid">
+        <!-- js/main.js 에 의해 7대 감정 렌더링 -->
+      </div>
+
+      <div class="record-form-wrap">
+        <textarea id="quick-note-input" class="record-input" rows="2" placeholder="지금 마음에 스치는 생각이나 감정을 한 줄로 남겨보세요. (비공개로 안전하게 보관됩니다)"></textarea>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div class="record-privacy-hint">
+            <span>🔒</span> 비로그인 시 내 기기에만 저장되며, 로그인 시 언제든 동기화할 수 있어요.
+          </div>
+          <button type="button" class="btn-primary" id="quick-save-btn" style="padding: 10px 20px;">
+            <span>🌸</span> <span>마음 일기 남기기</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 마음 카드 뽑기 섹션 -->
+    <section class="cards-deck-section">
+      <div class="section-head" style="justify-content: center; flex-direction: column; gap: 6px; text-align: center;">
+        <h2 class="section-title" style="justify-content: center;">
+          <span>🎴</span> <span>오늘의 마음 카드 뽑기</span>
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          혼란스럽거나 결단이 필요할 때, 나에게 필요한 지혜의 한 장을 뽑아보세요.
+        </p>
+      </div>
+
+      <div class="deck-container" id="deck-draw-area">
+        <div class="draw-card">
+          <div class="deck-icon">🪷</div>
+          <div class="deck-text">마음 카드 덱</div>
+          <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.8;">카드를 클릭해 지혜를 열어보세요</p>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" class="btn-secondary" id="deck-shuffle-btn">
+          <span>🔀</span> <span>새로운 카드 섞기</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 5. 불교 지혜 8선 소개 그리드 -->
+    <section style="margin-bottom: 40px;">
+      <div class="section-head">
+        <h2 class="section-title">
+          <span>📖</span> <span>일상에서 마주하는 불교 지혜</span>
+        </h2>
+        <a href="/wisdom" class="section-link">전체 지혜 사전 보기 →</a>
+      </div>
+
+      <div class="wisdom-grid">
+        <a href="/wisdom#impermanence" class="wisdom-card">
+          <div class="wisdom-card-top">
+            <span class="wisdom-badge" style="background: #EBF2EE; color: #4A6B5D;">흘러감의 지혜</span>
+            <span style="font-size: 1.2rem;">🍃</span>
+          </div>
+          <h3 class="wisdom-card-title">무상 (無常)</h3>
+          <p class="wisdom-card-summary">
+            슬픔도 기쁨도 영원하지 않다는 진리. 지금의 아픔 또한 반드시 흘러가 변화한다는 위로를 건넵니다.
+          </p>
+          <div class="wisdom-card-footer">
+            <span style="color: var(--sage-primary); font-weight: 600;">읽어보기 →</span>
+          </div>
+        </a>
+
+        <a href="/wisdom#letting_go" class="wisdom-card">
+          <div class="wisdom-card-top">
+            <span class="wisdom-badge" style="background: #FDF0EE; color: #C97A74;">손 안의 자유</span>
+            <span style="font-size: 1.2rem;">🪷</span>
+          </div>
+          <h3 class="wisdom-card-title">내려놓음 (放下着)</h3>
+          <p class="wisdom-card-summary">
+            통제할 수 없는 것을 억지로 쥐고 있던 주먹을 펴는 순간, 비로소 세상의 자유가 찾아옵니다.
+          </p>
+          <div class="wisdom-card-footer">
+            <span style="color: var(--lotus); font-weight: 600;">읽어보기 →</span>
+          </div>
+        </a>
+
+        <a href="/wisdom#compassion" class="wisdom-card">
+          <div class="wisdom-card-top">
+            <span class="wisdom-badge" style="background: #FAF0E6; color: #B88E3E;">마음의 온기</span>
+            <span style="font-size: 1.2rem;">🕊️</span>
+          </div>
+          <h3 class="wisdom-card-title">자비 (慈悲)</h3>
+          <p class="wisdom-card-summary">
+            남에게 다정하기 전, 오늘 실수하고 지친 나 자신부터 따스하게 안아주는 용기를 배웁니다.
+          </p>
+          <div class="wisdom-card-footer">
+            <span style="color: var(--gold); font-weight: 600;">읽어보기 →</span>
+          </div>
+        </a>
+
+        <a href="/wisdom#equanimity" class="wisdom-card">
+          <div class="wisdom-card-top">
+            <span class="wisdom-badge" style="background: #ECEFF1; color: #546E7A;">내면의 고요</span>
+            <span style="font-size: 1.2rem;">🏔️</span>
+          </div>
+          <h3 class="wisdom-card-title">평정심 (捨)</h3>
+          <p class="wisdom-card-summary">
+            세상의 칭찬과 비난이라는 바람에도 흔들리지 않는 깊은 바다 같은 중심을 지킵니다.
+          </p>
+          <div class="wisdom-card-footer">
+            <span style="color: #546E7A; font-weight: 600;">읽어보기 →</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 패밀리 서비스 링크 바 -->
+    <nav class="family-footer-bar" aria-label="패밀리 서비스">
+      <div class="family-footer-title">CHATGングTS.KR 패밀리 놀자 서비스</div>
+      <div class="family-links-flex">
+        <a href="https://hanja.chatgpts.kr" target="_blank" rel="noopener" class="family-link-item">📖 한자야 놀자</a>
+        <a href="https://voca.chatgpts.kr" target="_blank" rel="noopener" class="family-link-item">⚡ 단어야 놀자</a>
+        <a href="https://history.chatgpts.kr" target="_blank" rel="noopener" class="family-link-item">📜 역사야 놀자</a>
+        <a href="https://fortune.chatgpts.kr" target="_blank" rel="noopener" class="family-link-item">🔮 운세야 놀자</a>
+        <a href="https://mindtest.chatgpts.kr" target="_blank" rel="noopener" class="family-link-item">🧠 마인드테스트</a>
+        <a href="https://bible.chatgpts.kr" target="_blank" rel="noopener" class="family-link-item">✝️ 성경아 놀자</a>
+        <a href="https://work.chatgpts.kr" target="_blank" rel="noopener" class="family-link-item">💼 워크야 놀자</a>
+        <a href="https://money.chatgpts.kr" target="_blank" rel="noopener" class="family-link-item">💰 머니야 놀자</a>
+        <a href="https://tools.chatgpts.kr" target="_blank" rel="noopener" class="family-link-item">🛠️ 문서야 놀자</a>
+      </div>
+    </nav>
+
+    <!-- 푸터 -->
+    <footer class="site-footer">
+      <p>
+        마음아 놀자 · 무료 마음 수양 및 호흡 명상 도구
+      </p>
+      <p>
+        본 서비스의 콘텐츠는 일상 속 평온을 돕기 위한 철학적 성찰 글귀이며, 의료적 치료를 대신할 수 없습니다.
+      </p>
+      <p style="margin-top: 8px;">
+        <a href="https://chatgpts.kr/page/개인정보-처리방침" target="_blank" rel="noopener" class="footer-privacy-link">개인정보 처리방침</a> · 
+        <a href="/admin" class="footer-privacy-link">관리자</a>
+      </p>
+      <p style="margin-top: 6px; font-size: 0.8rem;">
+        © 2026 chatgpts.kr · All rights reserved.
+      </p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/maum-data.js?v=20260909"></script>
+  <script src="/js/meditation.js?v=20260909"></script>
+  <script src="/js/record.js?v=20260909"></script>
+  <script src="/js/main.js?v=20260909"></script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>내 기록실 - 마음아 놀자</title>
+  <meta name="description" content="내가 남긴 마음 일기, 명상 수련 시간, 소중히 담아둔 지혜 카드와 감정 통계를 확인하는 공간입니다.">
+  <link rel="canonical" href="https://maum.chatgpts.kr/my">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="마음아 놀자">
+  <meta property="og:title" content="내 기록실 - 마음아 놀자">
+  <meta property="og:description" content="나만의 마음 일기와 명상 수련 아카이브">
+  <meta property="og:url" content="https://maum.chatgpts.kr/my">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%AA%B7%3C%2Ftext%3E%3C%2Fsvg%3E">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css?v=20260909">
+  <link rel="stylesheet" href="/css/cg-auth.css?v=20260909">
+
+  <!-- Supabase & Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-config.js?v=20260909"></script>
+  <script defer src="/js/cg-auth.js?v=20260909" data-service="maum" data-mount="#cg-auth-slot"></script>
+  <script defer src="/js/track.js?v=20260909" data-service="maum"></script>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 헤더 -->
+    <header class="site-head">
+      <a href="/" class="brand-logo">
+        <span class="logo-symbol">🪷</span>
+        <span>마음아 <span class="dot">놀자</span></span>
+      </a>
+      
+      <div class="header-right">
+        <div id="cg-auth-slot"></div>
+        <div class="family-nav-wrap">
+          <button type="button" class="family-btn" id="family-btn">다른 놀자 서비스 ▾</button>
+          <div class="family-dropdown" id="family-dropdown">
+            <a href="https://hanja.chatgpts.kr" target="_blank" rel="noopener">📖 한자야 놀자</a>
+            <a href="https://voca.chatgpts.kr" target="_blank" rel="noopener">⚡ 단어야 놀자</a>
+            <a href="https://history.chatgpts.kr" target="_blank" rel="noopener">📜 역사야 놀자</a>
+            <a href="https://fortune.chatgpts.kr" target="_blank" rel="noopener">🔮 운세야 놀자</a>
+            <a href="https://mindtest.chatgpts.kr" target="_blank" rel="noopener">🧠 마인드테스트</a>
+            <a href="https://bible.chatgpts.kr" target="_blank" rel="noopener">✝️ 성경아 놀자</a>
+            <a href="https://work.chatgpts.kr" target="_blank" rel="noopener">💼 워크야 놀자</a>
+            <a href="https://money.chatgpts.kr" target="_blank" rel="noopener">💰 머니야 놀자</a>
+            <a href="https://tools.chatgpts.kr" target="_blank" rel="noopener">🛠️ 문서야 놀자</a>
+            <a href="https://chatgpts.kr" target="_blank" rel="noopener">🏠 chatgpts.kr</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 네비게이션 칩스 -->
+    <nav class="nav-scroll" aria-label="메인 메뉴">
+      <a href="/" class="nav-chip">🏠 홈</a>
+      <a href="/today" class="nav-chip">📜 오늘의 마음</a>
+      <a href="/meditation" class="nav-chip">🧘 호흡 명상</a>
+      <a href="/wisdom" class="nav-chip">🪷 불교 지혜</a>
+      <a href="/cards" class="nav-chip">🎴 마음 카드</a>
+      <a href="/record" class="nav-chip">📝 마음 기록장</a>
+      <a href="/my" class="nav-chip active">👤 내 기록실</a>
+    </nav>
+
+    <!-- 사용자 계정 / 동기화 상태 배너 -->
+    <div id="user-status-card" class="daily-card-container" style="padding: 22px 24px; margin-bottom: 24px;">
+      <!-- JS 렌더링 -->
+    </div>
+
+    <!-- 통계 서머리 카드 3종 -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; text-align: center; box-shadow: var(--shadow-sm);">
+        <div style="font-size: 0.86rem; color: var(--text-subtle); margin-bottom: 4px;">누적 명상 시간</div>
+        <div id="stat-med-time" style="font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; color: var(--sage-primary);">0분</div>
+      </div>
+
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; text-align: center; box-shadow: var(--shadow-sm);">
+        <div style="font-size: 0.86rem; color: var(--text-subtle); margin-bottom: 4px;">작성한 마음 일기</div>
+        <div id="stat-log-count" style="font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; color: var(--lotus);">0개</div>
+      </div>
+
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; text-align: center; box-shadow: var(--shadow-sm);">
+        <div style="font-size: 0.86rem; color: var(--text-subtle); margin-bottom: 4px;">보관한 지혜 글귀</div>
+        <div id="stat-fav-count" style="font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; color: var(--gold);">0개</div>
+      </div>
+    </div>
+
+    <!-- 감정 통계 분포 바 -->
+    <div class="daily-card-container" style="padding: 24px; margin-bottom: 32px;">
+      <h3 style="font-family: var(--font-serif); font-size: 1.15rem; margin-bottom: 14px; color: var(--text-main);">
+        📊 나의 감정 날씨 분포
+      </h3>
+      <div id="mood-chart-area">
+        <!-- JS 렌더링 -->
+      </div>
+    </div>
+
+    <!-- 탭 네비게이션 -->
+    <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--border); margin-bottom: 24px;">
+      <button type="button" class="mode-btn active" id="tab-logs-btn" style="padding: 10px 18px; font-size: 0.95rem;">
+        📝 마음 일기
+      </button>
+      <button type="button" class="mode-btn" id="tab-favs-btn" style="padding: 10px 18px; font-size: 0.95rem;">
+        ❤️ 보관한 지혜
+      </button>
+      <button type="button" class="mode-btn" id="tab-med-btn" style="padding: 10px 18px; font-size: 0.95rem;">
+        🧘 명상 기록
+      </button>
+    </div>
+
+    <!-- 탭 콘텐츠 마운트 -->
+    <div id="tab-content-area" style="min-height: 280px; margin-bottom: 48px;">
+      <!-- JS 렌더링 -->
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="site-footer">
+      <p>마음아 놀자 · <a href="https://chatgpts.kr/page/개인정보-처리방침" target="_blank" rel="noopener" class="footer-privacy-link">개인정보 처리방침</a></p>
+      <p style="margin-top: 6px; font-size: 0.8rem;">© 2026 chatgpts.kr · All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/maum-data.js?v=20260909"></script>
+  <script src="/js/record.js?v=20260909"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 패밀리 드롭다운
+      const fBtn = document.getElementById('family-btn');
+      const fDrop = document.getElementById('family-dropdown');
+      if (fBtn && fDrop) {
+        fBtn.addEventListener('click', (e) => { e.stopPropagation(); fDrop.classList.toggle('show'); });
+        document.addEventListener('click', () => fDrop.classList.remove('show'));
+      }
+
+      const statusCard = document.getElementById('user-status-card');
+      const statMed = document.getElementById('stat-med-time');
+      const statLog = document.getElementById('stat-log-count');
+      const statFav = document.getElementById('stat-fav-count');
+      const chartArea = document.getElementById('mood-chart-area');
+      const contentArea = document.getElementById('tab-content-area');
+
+      const tabLogsBtn = document.getElementById('tab-logs-btn');
+      const tabFavsBtn = document.getElementById('tab-favs-btn');
+      const tabMedBtn = document.getElementById('tab-med-btn');
+
+      let currentTab = 'logs';
+
+      function renderUserStatus() {
+        const user = window.CGAuth && window.CGAuth.user;
+        const profile = window.CGAuth && window.CGAuth.profile;
+
+        if (user) {
+          statusCard.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--sage-light); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                  🪷
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">
+                    ${profile && profile.display_name ? profile.display_name : (user.email || '수행자')} 님
+                  </div>
+                  <div style="font-size: 0.82rem; color: var(--sage-dark);">
+                    ☁️ Google 계정 클라우드 동기화 연결됨
+                  </div>
+                </div>
+              </div>
+              <div style="font-size: 0.85rem; color: var(--text-subtle);">
+                모든 마음 기록이 안전하게 보호됩니다.
+              </div>
+            </div>
+          `;
+        } else {
+          statusCard.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <div style="font-weight: 700; font-size: 1rem; color: var(--text-main); margin-bottom: 4px;">
+                  🌱 현재 비로그인 모드로 이용 중입니다
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">
+                  기록은 현재 브라우저에 안전하게 보관됩니다. Google 로그인하면 다른 기기에서도 언제든 이어서 확인할 수 있어요.
+                </div>
+              </div>
+              <button type="button" class="btn-primary" onclick="if(window.CGAuth) window.CGAuth.login();" style="padding: 8px 18px; font-size: 0.88rem;">
+                Google 로그인하기
+              </button>
+            </div>
+          `;
+        }
+      }
+
+      function refreshAll() {
+        const logs = JSON.parse(localStorage.getItem('maum_daily_logs') || '[]');
+        const favs = JSON.parse(localStorage.getItem('maum_favorites') || '[]');
+        const meds = JSON.parse(localStorage.getItem('maum_meditation_logs') || '[]');
+
+        // 통계 계산
+        const totalMedSec = meds.reduce((acc, cur) => acc + (cur.duration || 60), 0);
+        statMed.textContent = `${Math.round(totalMedSec / 60)}분`;
+        statLog.textContent = `${logs.length}개`;
+        statFav.textContent = `${favs.length}개`;
+
+        // 감정 차트
+        renderMoodChart(logs);
+
+        // 탭 렌더링
+        renderTab();
+      }
+
+      function renderMoodChart(logs) {
+        if (logs.length === 0) {
+          chartArea.innerHTML = '<p style="color: var(--text-subtle); font-size: 0.9rem;">아직 감정 기록이 없습니다. 마음 기록장에서 첫 기록을 남겨보세요.</p>';
+          return;
+        }
+
+        const counts = {};
+        logs.forEach(l => { counts[l.mood] = (counts[l.mood] || 0) + 1; });
+
+        chartArea.innerHTML = `
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            ${MAUM_DATA.emotions.map(e => {
+              const count = counts[e.key] || 0;
+              const pct = Math.round((count / logs.length) * 100);
+              if (count === 0) return '';
+              return `
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 3px;">
+                    <span>${e.icon} ${e.label}</span>
+                    <span style="color: var(--text-subtle);">${count}회 (${pct}%)</span>
+                  </div>
+                  <div style="width: 100%; height: 8px; background: var(--bg-soft); border-radius: var(--radius-full); overflow: hidden;">
+                    <div style="width: ${pct}%; height: 100%; background: ${e.color}; border-radius: var(--radius-full);"></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      function renderTab() {
+        if (currentTab === 'logs') {
+          const logs = JSON.parse(localStorage.getItem('maum_daily_logs') || '[]');
+          if (logs.length === 0) {
+            contentArea.innerHTML = '<p style="color: var(--text-subtle); text-align: center; padding: 40px 0;">작성된 마음 일기가 없습니다.</p>';
+            return;
+          }
+
+          contentArea.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              ${logs.map(log => {
+                const emo = MAUM_DATA.emotions.find(e => e.key === log.mood) || { icon: '🌿', label: log.mood };
+                const d = new Date(log.created_at || Date.now());
+                const dateStr = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${d.getMinutes() < 10 ? '0' : ''}${d.getMinutes()}`;
+
+                return `
+                  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                      <span style="font-weight: 700; font-size: 0.95rem;">${emo.icon} ${emo.label}</span>
+                      <span style="font-size: 0.8rem; color: var(--text-subtle);">${dateStr}</span>
+                    </div>
+                    ${log.let_go ? `<div style="font-size: 0.9rem; margin-bottom: 4px;"><strong style="color: var(--lotus);">[내려놓음]</strong> ${log.let_go}</div>` : ''}
+                    ${log.gratitude ? `<div style="font-size: 0.9rem; margin-bottom: 4px;"><strong style="color: var(--gold);">[감사]</strong> ${log.gratitude}</div>` : ''}
+                    ${log.note ? `<div style="font-size: 0.92rem; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-light); font-family: var(--font-serif);">"${log.note}"</div>` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        } else if (currentTab === 'favs') {
+          const favs = JSON.parse(localStorage.getItem('maum_favorites') || '[]');
+          if (favs.length === 0) {
+            contentArea.innerHTML = '<p style="color: var(--text-subtle); text-align: center; padding: 40px 0;">보관함이 비어 있습니다. 오늘의 성찰이나 지혜 글에 하트를 눌러보세요.</p>';
+            return;
+          }
+
+          contentArea.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;">
+              ${favs.map(f => `
+                <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px;">
+                  <div style="font-size: 0.8rem; color: var(--sage-dark); font-weight: 700; margin-bottom: 6px;">${f.category || f.content_type}</div>
+                  <h4 style="font-family: var(--font-serif); font-size: 1.05rem; margin-bottom: 8px;">${f.title}</h4>
+                  <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">"${f.text}"</p>
+                  <button type="button" class="icon-btn" onclick="window.MaumRecord.toggleFavorite({ content_type: '${f.content_type}', content_key: '${f.content_key}' }); location.reload();" style="padding: 4px 10px; font-size: 0.8rem;">
+                    <span>🗑️</span> <span>보관 취소</span>
+                  </button>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        } else if (currentTab === 'med') {
+          const meds = JSON.parse(localStorage.getItem('maum_meditation_logs') || '[]');
+          if (meds.length === 0) {
+            contentArea.innerHTML = '<p style="color: var(--text-subtle); text-align: center; padding: 40px 0;">아직 완료한 호흡 명상이 없습니다.</p>';
+            return;
+          }
+
+          contentArea.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              ${meds.map(m => {
+                const d = new Date(m.created_at || Date.now());
+                const dateStr = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${d.getMinutes() < 10 ? '0' : ''}${d.getMinutes()}`;
+                return `
+                  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <span style="font-weight: 700; color: var(--sage-dark);">🧘 ${Math.round((m.duration || 60) / 60)}분 명상 완료</span>
+                      <span style="font-size: 0.82rem; color: var(--text-subtle); margin-left: 8px;">${m.technique === 'calm' ? '이완 호흡' : '박스 호흡'}</span>
+                    </div>
+                    <span style="font-size: 0.8rem; color: var(--text-subtle);">${dateStr}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        }
+      }
+
+      tabLogsBtn.addEventListener('click', () => {
+        tabLogsBtn.classList.add('active');
+        tabFavsBtn.classList.remove('active');
+        tabMedBtn.classList.remove('active');
+        currentTab = 'logs';
+        renderTab();
+      });
+
+      tabFavsBtn.addEventListener('click', () => {
+        tabFavsBtn.classList.add('active');
+        tabLogsBtn.classList.remove('active');
+        tabMedBtn.classList.remove('active');
+        currentTab = 'favs';
+        renderTab();
+      });
+
+      tabMedBtn.addEventListener('click', () => {
+        tabMedBtn.classList.add('active');
+        tabLogsBtn.classList.remove('active');
+        tabFavsBtn.classList.remove('active');
+        currentTab = 'med';
+        renderTab();
+      });
+
+      window.addEventListener('cg-auth:change', renderUserStatus);
+      renderUserStatus();
+      refreshAll();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>불교 지혜 라이브러리 - 마음아 놀자</title>
+  <meta name="description" content="무상, 내려놓음, 자비, 평정심 등 불교의 8대 핵심 지혜를 현대인의 일상 언어로 재해석한 따뜻한 마음 사전입니다.">
+  <link rel="canonical" href="https://maum.chatgpts.kr/wisdom">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="마음아 놀자">
+  <meta property="og:title" content="불교 지혜 라이브러리 - 마음아 놀자">
+  <meta property="og:description" content="일상의 번뇌를 녹이는 8가지 깊은 지혜와 이야기">
+  <meta property="og:url" content="https://maum.chatgpts.kr/wisdom">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%AA%B7%3C%2Ftext%3E%3C%2Fsvg%3E">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css?v=20260909">
+  <link rel="stylesheet" href="/css/cg-auth.css?v=20260909">
+
+  <!-- Supabase & Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-config.js?v=20260909"></script>
+  <script defer src="/js/cg-auth.js?v=20260909" data-service="maum" data-mount="#cg-auth-slot"></script>
+  <script defer src="/js/track.js?v=20260909" data-service="maum"></script>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 헤더 -->
+    <header class="site-head">
+      <a href="/" class="brand-logo">
+        <span class="logo-symbol">🪷</span>
+        <span>마음아 <span class="dot">놀자</span></span>
+      </a>
+      
+      <div class="header-right">
+        <div id="cg-auth-slot"></div>
+        <div class="family-nav-wrap">
+          <button type="button" class="family-btn" id="family-btn">다른 놀자 서비스 ▾</button>
+          <div class="family-dropdown" id="family-dropdown">
+            <a href="https://hanja.chatgpts.kr" target="_blank" rel="noopener">📖 한자야 놀자</a>
+            <a href="https://voca.chatgpts.kr" target="_blank" rel="noopener">⚡ 단어야 놀자</a>
+            <a href="https://history.chatgpts.kr" target="_blank" rel="noopener">📜 역사야 놀자</a>
+            <a href="https://fortune.chatgpts.kr" target="_blank" rel="noopener">🔮 운세야 놀자</a>
+            <a href="https://mindtest.chatgpts.kr" target="_blank" rel="noopener">🧠 마인드테스트</a>
+            <a href="https://bible.chatgpts.kr" target="_blank" rel="noopener">✝️ 성경아 놀자</a>
+            <a href="https://work.chatgpts.kr" target="_blank" rel="noopener">💼 워크야 놀자</a>
+            <a href="https://money.chatgpts.kr" target="_blank" rel="noopener">💰 머니야 놀자</a>
+            <a href="https://tools.chatgpts.kr" target="_blank" rel="noopener">🛠️ 문서야 놀자</a>
+            <a href="https://chatgpts.kr" target="_blank" rel="noopener">🏠 chatgpts.kr</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 네비게이션 칩스 -->
+    <nav class="nav-scroll" aria-label="메인 메뉴">
+      <a href="/" class="nav-chip">🏠 홈</a>
+      <a href="/today" class="nav-chip">📜 오늘의 마음</a>
+      <a href="/meditation" class="nav-chip">🧘 호흡 명상</a>
+      <a href="/wisdom" class="nav-chip active">🪷 불교 지혜</a>
+      <a href="/cards" class="nav-chip">🎴 마음 카드</a>
+      <a href="/record" class="nav-chip">📝 마음 기록장</a>
+      <a href="/my" class="nav-chip">👤 내 기록실</a>
+    </nav>
+
+    <!-- 인트로 -->
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-family: var(--font-serif); font-size: 1.8rem; color: var(--text-main); margin-bottom: 6px;">
+        🪷 불교 지혜 사전 (8대 가르침)
+      </h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        특정 종교의 교리가 아닌, 2600년간 검증된 마음 다스림의 지혜를 현대인의 일상 언어로 마주합니다.
+      </p>
+    </div>
+
+    <!-- 카테고리 칩 필터 -->
+    <div id="wisdom-filter-chips" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 24px; scrollbar-width: none;">
+      <!-- JS 렌더링 -->
+    </div>
+
+    <!-- 지혜 카드 리스트 -->
+    <div id="wisdom-cards-container" style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 48px;">
+      <!-- JS 렌더링 -->
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="site-footer">
+      <p>마음아 놀자 · <a href="https://chatgpts.kr/page/개인정보-처리방침" target="_blank" rel="noopener" class="footer-privacy-link">개인정보 처리방침</a></p>
+      <p style="margin-top: 6px; font-size: 0.8rem;">© 2026 chatgpts.kr · All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/maum-data.js?v=20260909"></script>
+  <script src="/js/record.js?v=20260909"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 드롭다운
+      const fBtn = document.getElementById('family-btn');
+      const fDrop = document.getElementById('family-dropdown');
+      if (fBtn && fDrop) {
+        fBtn.addEventListener('click', (e) => { e.stopPropagation(); fDrop.classList.toggle('show'); });
+        document.addEventListener('click', () => fDrop.classList.remove('show'));
+      }
+
+      const filterMount = document.getElementById('wisdom-filter-chips');
+      const container = document.getElementById('wisdom-cards-container');
+      const categories = MAUM_DATA.wisdomCategories;
+
+      let currentFilter = 'all';
+
+      // 필터 칩 생성
+      filterMount.innerHTML = `
+        <button type="button" class="nav-chip active" data-cat="all">전체보기 (${categories.length})</button>
+        ${categories.map(c => `
+          <button type="button" class="nav-chip" data-cat="${c.id}">${c.icon} ${c.name}</button>
+        `).join('')}
+      `;
+
+      function renderCards(filter) {
+        const list = filter === 'all' ? categories : categories.filter(c => c.id === filter);
+
+        container.innerHTML = list.map(item => {
+          const isFav = window.MaumRecord ? window.MaumRecord.isFavorite('wisdom', item.id) : false;
+
+          return `
+            <article class="daily-card-container" id="${item.id}" style="border-left: 5px solid ${item.color || 'var(--sage-primary)'};">
+              <div class="daily-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.5rem;">${item.icon}</span>
+                  <h2 style="font-family: var(--font-serif); font-size: 1.45rem; color: var(--text-main); margin: 0;">
+                    ${item.name} <span style="font-size: 0.9rem; color: var(--text-muted); font-family: var(--font-body); font-weight: normal;">· ${item.sub}</span>
+                  </h2>
+                </div>
+                <span class="daily-badge" style="background: var(--bg-soft); color: var(--text-main); border-color: var(--border);">
+                  ${item.badge}
+                </span>
+              </div>
+
+              <!-- 요약 -->
+              <div style="font-size: 1.08rem; font-weight: 700; color: var(--text-main); margin-bottom: 14px; word-break: keep-all;">
+                "${item.summary}"
+              </div>
+
+              <!-- 일상 해설 -->
+              <p style="font-size: 0.98rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 20px; word-break: keep-all;">
+                ${item.description}
+              </p>
+
+              <!-- 일상 속 이야기 박스 -->
+              <div style="background: var(--bg-soft); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 20px;">
+                <div style="font-size: 0.88rem; font-weight: 700; color: var(--sage-dark); margin-bottom: 6px;">
+                  📖 마음 이야기
+                </div>
+                <p style="font-size: 0.93rem; color: var(--text-main); line-height: 1.65; word-break: keep-all;">
+                  ${item.realLifeStory}
+                </p>
+              </div>
+
+              <!-- 실천 팁 -->
+              <div class="daily-practice-card" style="margin-bottom: 20px;">
+                <div class="practice-icon">💡</div>
+                <div class="practice-content">
+                  <h4>일상 속 실천 가이드</h4>
+                  <ul style="padding-left: 18px; margin-top: 4px; font-size: 0.92rem; line-height: 1.6;">
+                    ${item.practices.map(p => `<li>${p}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>
+
+              <!-- 전통 지혜 명언 -->
+              <div style="font-size: 0.88rem; color: var(--text-subtle); font-style: italic; margin-bottom: 16px;">
+                💬 "${item.quote}"
+              </div>
+
+              <div class="daily-card-footer">
+                <button type="button" class="icon-btn ${isFav ? 'active' : ''}" data-fav-id="${item.id}">
+                  <span>${isFav ? '❤️' : '🤍'}</span> <span>${isFav ? '보관됨' : '보관하기'}</span>
+                </button>
+                <button type="button" class="icon-btn" data-share-id="${item.id}">
+                  <span>📤</span> <span>공유하기</span>
+                </button>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        // 보관하기 바인딩
+        container.querySelectorAll('[data-fav-id]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.getAttribute('data-fav-id');
+            const target = categories.find(c => c.id === id);
+            if (!target || !window.MaumRecord) return;
+
+            const nowFav = await window.MaumRecord.toggleFavorite({
+              content_type: 'wisdom',
+              content_key: target.id,
+              title: `${target.name} : ${target.sub}`,
+              text: target.summary,
+              category: target.name
+            });
+
+            btn.classList.toggle('active', nowFav);
+            btn.innerHTML = `<span>${nowFav ? '❤️' : '🤍'}</span> <span>${nowFav ? '보관됨' : '보관하기'}</span>`;
+          });
+        });
+
+        // 공유하기 바인딩
+        container.querySelectorAll('[data-share-id]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.getAttribute('data-share-id');
+            const target = categories.find(c => c.id === id);
+            if (!target) return;
+
+            const text = `[마음아 놀자] ${target.name} - ${target.summary}\nhttps://maum.chatgpts.kr/wisdom#${target.id}`;
+            if (navigator.share) {
+              try { await navigator.share({ title: target.name, text, url: location.href }); } catch (_) {}
+            } else {
+              try {
+                await navigator.clipboard.writeText(text);
+                if (window.showToast) window.showToast('📋 지혜 글이 클립보드에 복사되었습니다.');
+              } catch (_) {}
+            }
+          });
+        });
+      }
+
+      // 필터 칩 클릭 이벤트
+      filterMount.querySelectorAll('button').forEach(chip => {
+        chip.addEventListener('click', () => {
+          filterMount.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+          chip.classList.add('active');
+          const cat = chip.getAttribute('data-cat');
+          renderCards(cat);
+        });
+      });
+
+      // 해시 감지 (예: #impermanence 로 바로 진입 시)
+      const hash = location.hash.replace('#', '');
+      if (hash && categories.some(c => c.id === hash)) {
+        renderCards(hash);
+        const matchChip = filterMount.querySelector(`[data-cat="${hash}"]`);
+        if (matchChip) {
+          filterMount.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+          matchChip.classList.add('active');
+        }
+      } else {
+        renderCards('all');
+      }
+    });
+  </script>
+</body>
+</html>

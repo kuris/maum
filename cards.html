@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음 카드 뽑기 - 마음아 놀자</title>
+  <meta name="description" content="복잡한 머릿속을 정리하고 마음에 휴식을 주는 40장의 테마별 마음 카드. 나에게 지금 꼭 필요한 한 마디 지혜를 뽑아보세요.">
+  <link rel="canonical" href="https://maum.chatgpts.kr/cards">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="마음아 놀자">
+  <meta property="og:title" content="마음 카드 뽑기 - 마음아 놀자">
+  <meta property="og:description" content="지금 내 마음에 건네는 다정한 한 줄의 위로와 지혜">
+  <meta property="og:url" content="https://maum.chatgpts.kr/cards">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%AA%B7%3C%2Ftext%3E%3C%2Fsvg%3E">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css?v=20260909">
+  <link rel="stylesheet" href="/css/cg-auth.css?v=20260909">
+
+  <!-- Supabase & Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-config.js?v=20260909"></script>
+  <script defer src="/js/cg-auth.js?v=20260909" data-service="maum" data-mount="#cg-auth-slot"></script>
+  <script defer src="/js/track.js?v=20260909" data-service="maum"></script>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 헤더 -->
+    <header class="site-head">
+      <a href="/" class="brand-logo">
+        <span class="logo-symbol">🪷</span>
+        <span>마음아 <span class="dot">놀자</span></span>
+      </a>
+      
+      <div class="header-right">
+        <div id="cg-auth-slot"></div>
+        <div class="family-nav-wrap">
+          <button type="button" class="family-btn" id="family-btn">다른 놀자 서비스 ▾</button>
+          <div class="family-dropdown" id="family-dropdown">
+            <a href="https://hanja.chatgpts.kr" target="_blank" rel="noopener">📖 한자야 놀자</a>
+            <a href="https://voca.chatgpts.kr" target="_blank" rel="noopener">⚡ 단어야 놀자</a>
+            <a href="https://history.chatgpts.kr" target="_blank" rel="noopener">📜 역사야 놀자</a>
+            <a href="https://fortune.chatgpts.kr" target="_blank" rel="noopener">🔮 운세야 놀자</a>
+            <a href="https://mindtest.chatgpts.kr" target="_blank" rel="noopener">🧠 마인드테스트</a>
+            <a href="https://bible.chatgpts.kr" target="_blank" rel="noopener">✝️ 성경아 놀자</a>
+            <a href="https://work.chatgpts.kr" target="_blank" rel="noopener">💼 워크야 놀자</a>
+            <a href="https://money.chatgpts.kr" target="_blank" rel="noopener">💰 머니야 놀자</a>
+            <a href="https://tools.chatgpts.kr" target="_blank" rel="noopener">🛠️ 문서야 놀자</a>
+            <a href="https://chatgpts.kr" target="_blank" rel="noopener">🏠 chatgpts.kr</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 네비게이션 칩스 -->
+    <nav class="nav-scroll" aria-label="메인 메뉴">
+      <a href="/" class="nav-chip">🏠 홈</a>
+      <a href="/today" class="nav-chip">📜 오늘의 마음</a>
+      <a href="/meditation" class="nav-chip">🧘 호흡 명상</a>
+      <a href="/wisdom" class="nav-chip">🪷 불교 지혜</a>
+      <a href="/cards" class="nav-chip active">🎴 마음 카드</a>
+      <a href="/record" class="nav-chip">📝 마음 기록장</a>
+      <a href="/my" class="nav-chip">👤 내 기록실</a>
+    </nav>
+
+    <!-- 인트로 -->
+    <div style="text-align: center; margin-bottom: 24px;">
+      <span class="daily-badge">✨ 40장의 지혜 덱</span>
+      <h1 style="font-family: var(--font-serif); font-size: 2rem; color: var(--text-main); margin: 10px 0 6px;">
+        마음 카드 뽑기
+      </h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 500px; margin: 0 auto;">
+        마음이 번잡하거나 위로가 필요할 때, 원하는 테마를 고르고 카드를 뽑아보세요.
+      </p>
+    </div>
+
+    <!-- 테마 선택 탭 -->
+    <div id="deck-theme-chips" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+      <button type="button" class="nav-chip active" data-theme="all">전체 덱</button>
+      <button type="button" class="nav-chip" data-theme="peace">🌊 평온</button>
+      <button type="button" class="nav-chip" data-theme="comfort">🕯️ 위로</button>
+      <button type="button" class="nav-chip" data-theme="courage">🦁 용기</button>
+      <button type="button" class="nav-chip" data-theme="wisdom">🌙 지혜</button>
+      <button type="button" class="nav-chip" data-theme="letting_go">🤲 내려놓음</button>
+      <button type="button" class="nav-chip" data-theme="compassion">💖 자비</button>
+      <button type="button" class="nav-chip" data-theme="gratitude">☀️ 감사</button>
+      <button type="button" class="nav-chip" data-theme="wholeness">🌕 온전함</button>
+    </div>
+
+    <!-- 카드 인터랙션 영역 -->
+    <div class="cards-deck-section" style="min-height: 440px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <div id="card-stage" class="deck-container" style="width: 100%;">
+        <div class="draw-card" id="deck-touch-card">
+          <div class="deck-icon">🪷</div>
+          <div class="deck-text">마음 카드</div>
+          <p style="font-size: 0.82rem; margin-top: 12px; opacity: 0.85;">여기를 탭하여 뽑기</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <button type="button" class="btn-primary" id="shuffle-draw-btn" style="padding: 12px 24px;">
+          <span>🎴</span> <span>한 장 뽑기</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 최근 뽑은 카드 보관함 -->
+    <section style="margin-top: 36px; margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-serif); font-size: 1.25rem; margin-bottom: 16px; color: var(--text-main);">
+        📜 오늘 마주한 지혜들
+      </h2>
+      <div id="session-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px;">
+        <!-- JS 렌더링 -->
+      </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="site-footer">
+      <p>마음아 놀자 · <a href="https://chatgpts.kr/page/개인정보-처리방침" target="_blank" rel="noopener" class="footer-privacy-link">개인정보 처리방침</a></p>
+      <p style="margin-top: 6px; font-size: 0.8rem;">© 2026 chatgpts.kr · All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/maum-data.js?v=20260909"></script>
+  <script src="/js/record.js?v=20260909"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 드롭다운
+      const fBtn = document.getElementById('family-btn');
+      const fDrop = document.getElementById('family-dropdown');
+      if (fBtn && fDrop) {
+        fBtn.addEventListener('click', (e) => { e.stopPropagation(); fDrop.classList.toggle('show'); });
+        document.addEventListener('click', () => fDrop.classList.remove('show'));
+      }
+
+      const stage = document.getElementById('card-stage');
+      const shuffleBtn = document.getElementById('shuffle-draw-btn');
+      const themeChips = document.querySelectorAll('#deck-theme-chips button');
+      const sessionGrid = document.getElementById('session-cards-grid');
+
+      let currentTheme = 'all';
+      const sessionDrawn = [];
+
+      themeChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          themeChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          currentTheme = chip.getAttribute('data-theme');
+        });
+      });
+
+      function drawCard() {
+        const card = getRandomMindCard(currentTheme);
+        sessionDrawn.unshift(card);
+
+        // Supabase 클라우드 기록 (로그인 시)
+        if (window.CGAuth && window.CGAuth.user && window.CGAuth.client) {
+          window.CGAuth.client.from('maum_card_logs').insert({
+            user_id: window.CGAuth.user.id,
+            card_key: card.id,
+            theme: card.themeLabel,
+            title: card.keyword,
+            text: card.quote
+          }).then(() => {}).catch(() => {});
+        }
+
+        stage.innerHTML = `
+          <div class="drawn-card-result" style="width: 100%; max-width: 480px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <span class="drawn-card-theme" style="font-size: 0.88rem;">${card.symbol} ${card.themeLabel} · ${card.keyword}</span>
+              <button type="button" class="icon-btn" id="card-fav-btn">
+                <span>🤍</span> <span>보관</span>
+              </button>
+            </div>
+
+            <div class="drawn-card-quote" style="font-size: 1.35rem; margin-bottom: 14px;">
+              "${card.quote}"
+            </div>
+
+            <div class="drawn-card-desc" style="font-size: 1rem; line-height: 1.75; margin-bottom: 24px;">
+              ${card.desc}
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-light); flex-wrap: wrap; gap: 8px;">
+              <button type="button" class="icon-btn" id="card-copy-btn">
+                <span>📋</span> <span>글귀 복사</span>
+              </button>
+              <button type="button" class="btn-primary" id="card-redraw-btn" style="padding: 10px 20px;">
+                <span>🔄</span> <span>다시 뽑기</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        // 보관 바인딩
+        const favBtn = document.getElementById('card-fav-btn');
+        if (favBtn && window.MaumRecord) {
+          let isFav = window.MaumRecord.isFavorite('card', card.id);
+          if (isFav) favBtn.innerHTML = '<span>❤️</span> <span>보관됨</span>';
+          favBtn.addEventListener('click', async () => {
+            const nowFav = await window.MaumRecord.toggleFavorite({
+              content_type: 'card',
+              content_key: card.id,
+              title: `${card.themeLabel} : ${card.keyword}`,
+              text: card.quote,
+              category: card.themeLabel
+            });
+            favBtn.innerHTML = `<span>${nowFav ? '❤️' : '🤍'}</span> <span>${nowFav ? '보관됨' : '보관'}</span>`;
+          });
+        }
+
+        // 복사 바인딩
+        const copyBtn = document.getElementById('card-copy-btn');
+        if (copyBtn) {
+          copyBtn.addEventListener('click', async () => {
+            const text = `[마음아 놀자 - ${card.themeLabel} 카드]\n"${card.quote}"\n${card.desc}\nhttps://maum.chatgpts.kr/cards`;
+            try {
+              await navigator.clipboard.writeText(text);
+              if (window.showToast) window.showToast('📋 마음 카드가 복사되었습니다.');
+            } catch (_) {}
+          });
+        }
+
+        // 다시 뽑기 바인딩
+        const redrawBtn = document.getElementById('card-redraw-btn');
+        if (redrawBtn) {
+          redrawBtn.addEventListener('click', drawCard);
+        }
+
+        renderSessionHistory();
+      }
+
+      function renderSessionHistory() {
+        if (sessionDrawn.length === 0) {
+          sessionGrid.innerHTML = '<p style="color: var(--text-subtle); font-size: 0.9rem;">아직 뽑은 카드가 없습니다.</p>';
+          return;
+        }
+
+        sessionGrid.innerHTML = sessionDrawn.slice(0, 8).map(c => `
+          <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; box-shadow: var(--shadow-sm);">
+            <div style="font-size: 0.8rem; color: var(--sage-dark); font-weight: 700; margin-bottom: 4px;">${c.symbol} ${c.themeLabel} · ${c.keyword}</div>
+            <div style="font-family: var(--font-serif); font-size: 0.92rem; font-weight: 600; color: var(--text-main); line-height: 1.4;">"${c.quote}"</div>
+          </div>
+        `).join('');
+      }
+
+      stage.addEventListener('click', (e) => {
+        if (e.target.closest('#deck-touch-card')) {
+          drawCard();
+        }
+      });
+
+      shuffleBtn.addEventListener('click', drawCard);
+      renderSessionHistory();
+    });
+  </script>
+</body>
+</html>

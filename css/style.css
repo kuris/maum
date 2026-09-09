@@ -1,0 +1,1059 @@
+/* ============================================================
+   마음아 놀자 (maum.chatgpts.kr) - 전용 디자인 시스템 (style.css)
+   - 불교 지혜와 마음챙김에 최적화된 편안하고 우아한 Zen 톤앤매너
+   ============================================================ */
+
+:root {
+  /* 테마 컬러 팔레트 (지혜, 평온, 연꽃, 맑은 숨) */
+  --bg-main: #FAF7F2;
+  --bg-card: #FFFFFF;
+  --bg-soft: #F4EFE6;
+  --bg-card-hover: #FDFBF8;
+
+  --sage-primary: #4A6B5D;
+  --sage-dark: #375347;
+  --sage-light: #EBF2EE;
+  --sage-border: #D1E0D8;
+
+  --lotus: #C97A74;
+  --lotus-soft: #FDF0EE;
+  --lotus-border: #F3D2CF;
+
+  --gold: #B88E3E;
+  --gold-soft: #FBF6E9;
+
+  --text-main: #2C3531;
+  --text-muted: #5E6D66;
+  --text-subtle: #8A9A92;
+  --text-white: #FFFFFF;
+
+  --border: #E8E0D5;
+  --border-light: #F0EAE1;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 2px 8px rgba(44, 53, 49, 0.04);
+  --shadow-md: 0 8px 24px rgba(44, 53, 49, 0.07);
+  --shadow-lg: 0 16px 40px rgba(44, 53, 49, 0.11);
+  --shadow-float: 0 20px 48px rgba(74, 107, 93, 0.15);
+
+  --font-serif: 'Noto Serif KR', serif;
+  --font-body: 'Gowun Dodum', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Noto Serif KR', serif;
+
+  --transition-fast: 0.2s ease;
+  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 기본 리셋 & 글로벌 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(201, 122, 116, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(74, 107, 93, 0.05) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* 래퍼 */
+.wrap {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   헤더 (Header) & 패밀리 바
+   ============================================================ */
+.site-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 100;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  transition: transform var(--transition-fast);
+}
+
+.brand-logo:hover {
+  transform: translateY(-1px);
+}
+
+.logo-symbol {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, var(--sage-light), var(--lotus-soft));
+  border: 1px solid var(--sage-border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-logo .dot {
+  color: var(--lotus);
+  font-weight: 900;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.header-btn:hover {
+  background: var(--bg-soft);
+  color: var(--text-main);
+  border-color: var(--sage-border);
+}
+
+/* 패밀리 서비스 드롭다운 */
+.family-nav-wrap {
+  position: relative;
+}
+
+.family-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  transition: all var(--transition-fast);
+}
+
+.family-btn:hover {
+  background: var(--bg-soft);
+  color: var(--text-main);
+}
+
+.family-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 170px;
+  display: none;
+  flex-direction: column;
+  padding: 8px 0;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+}
+
+.family-dropdown.show {
+  display: flex;
+  animation: fadeInDown 0.2s ease-out;
+}
+
+.family-dropdown a {
+  padding: 9px 16px;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.family-dropdown a:hover {
+  background: var(--bg-soft);
+  color: var(--sage-primary);
+}
+
+/* ============================================================
+   상단 스크롤 네비게이션 칩스
+   ============================================================ */
+.nav-scroll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.nav-chip:hover {
+  border-color: var(--sage-border);
+  color: var(--sage-primary);
+  background: var(--sage-light);
+  transform: translateY(-1px);
+}
+
+.nav-chip.active {
+  background: var(--sage-primary);
+  color: var(--text-white);
+  border-color: var(--sage-primary);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(74, 107, 93, 0.25);
+}
+
+/* ============================================================
+   Hero 섹션
+   ============================================================ */
+.hero-section {
+  text-align: center;
+  padding: 36px 16px 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(244, 239, 230, 0.7) 100%);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-subtitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--sage-light);
+  color: var(--sage-dark);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  margin-bottom: 14px;
+  border: 1px solid var(--sage-border);
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: 2.1rem;
+  line-height: 1.35;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.hero-desc {
+  font-size: 1.02rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto 20px;
+  word-break: keep-all;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--sage-primary);
+  color: var(--text-white);
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-size: 0.98rem;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(74, 107, 93, 0.3);
+  transition: all var(--transition-fast);
+}
+
+.btn-primary:hover {
+  background: var(--sage-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(74, 107, 93, 0.4);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  padding: 12px 22px;
+  border-radius: var(--radius-full);
+  font-size: 0.98rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-soft);
+  border-color: var(--sage-border);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   오늘의 마음 (Daily Card) 섹션
+   ============================================================ */
+.daily-card-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 32px;
+  position: relative;
+  transition: box-shadow var(--transition-smooth);
+}
+
+.daily-card-container:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.daily-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.daily-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--lotus-soft);
+  color: var(--lotus);
+  border: 1px solid var(--lotus-border);
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.daily-date {
+  font-size: 0.88rem;
+  color: var(--text-subtle);
+}
+
+.daily-quote-box {
+  background: linear-gradient(180deg, var(--bg-soft) 0%, rgba(244, 239, 230, 0.3) 100%);
+  border-left: 4px solid var(--sage-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 22px 24px;
+  margin-bottom: 22px;
+}
+
+.daily-quote-text {
+  font-family: var(--font-serif);
+  font-size: 1.32rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.5;
+  margin-bottom: 8px;
+  word-break: keep-all;
+}
+
+.daily-buddhist-term {
+  font-size: 0.88rem;
+  color: var(--sage-dark);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.daily-commentary {
+  font-size: 1.02rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 24px;
+  word-break: keep-all;
+}
+
+.daily-practice-card {
+  background: var(--sage-light);
+  border: 1px solid var(--sage-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.practice-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.practice-content h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--sage-dark);
+  margin-bottom: 4px;
+}
+
+.practice-content p {
+  font-size: 0.92rem;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.daily-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.daily-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  transition: all var(--transition-fast);
+}
+
+.icon-btn:hover {
+  background: var(--bg-soft);
+  border-color: var(--sage-border);
+  color: var(--text-main);
+}
+
+.icon-btn.active {
+  color: var(--lotus);
+  border-color: var(--lotus-border);
+  background: var(--lotus-soft);
+}
+
+/* ============================================================
+   호흡 명상 위젯 (Breathing Widget)
+   ============================================================ */
+.meditation-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-link {
+  font-size: 0.88rem;
+  color: var(--sage-primary);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.section-link:hover {
+  text-decoration: underline;
+}
+
+/* 호흡 애니메이션 서클 */
+.breathing-circle-wrapper {
+  position: relative;
+  width: 230px;
+  height: 230px;
+  margin: 20px auto 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle-pulse-outer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 107, 93, 0.12) 0%, rgba(74, 107, 93, 0.02) 70%, transparent 100%);
+  transition: transform 3.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.circle-pulse-inner {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sage-primary), #618778);
+  box-shadow: var(--shadow-float);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-white);
+  position: relative;
+  z-index: 2;
+  transition: transform 3.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.breath-phase-text {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+
+.breath-timer-count {
+  font-size: 1.15rem;
+  opacity: 0.85;
+}
+
+/* 호흡 상태 클래스 */
+.breathing-circle-wrapper.inhale .circle-pulse-inner {
+  transform: scale(1.18);
+}
+.breathing-circle-wrapper.inhale .circle-pulse-outer {
+  transform: scale(1.35);
+}
+.breathing-circle-wrapper.hold .circle-pulse-inner {
+  transform: scale(1.18);
+}
+.breathing-circle-wrapper.exhale .circle-pulse-inner {
+  transform: scale(0.85);
+}
+.breathing-circle-wrapper.exhale .circle-pulse-outer {
+  transform: scale(0.95);
+}
+
+.meditation-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.mode-selector {
+  display: flex;
+  background: var(--bg-soft);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  gap: 4px;
+}
+
+.mode-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+}
+
+.mode-btn.active {
+  background: var(--bg-card);
+  color: var(--sage-primary);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   마음 감정 일기 퀵 위젯 (Emotion Logger)
+   ============================================================ */
+.quick-record-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.emotion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.emotion-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 8px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  gap: 6px;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.emotion-pill:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--sage-border);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.emotion-pill.selected {
+  background: var(--sage-light);
+  border-color: var(--sage-primary);
+  box-shadow: 0 4px 12px rgba(74, 107, 93, 0.18);
+}
+
+.emotion-pill .emo-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.emotion-pill .emo-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.record-form-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.record-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  transition: all var(--transition-fast);
+  resize: none;
+}
+
+.record-input:focus {
+  outline: none;
+  border-color: var(--sage-primary);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 3px rgba(74, 107, 93, 0.12);
+}
+
+.record-privacy-hint {
+  font-size: 0.82rem;
+  color: var(--text-subtle);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ============================================================
+   마음 카드 뽑기 (Card Deck) 위젯
+   ============================================================ */
+.cards-deck-section {
+  background: linear-gradient(180deg, #FBF8F3 0%, #F5EDE2 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 34px 24px;
+  margin-bottom: 32px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.deck-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+  min-height: 290px;
+  margin: 20px 0;
+}
+
+.draw-card {
+  width: 200px;
+  height: 290px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--sage-dark), var(--sage-primary));
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-white);
+  padding: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  position: relative;
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+}
+
+.draw-card:hover {
+  transform: translateY(-8px) rotate(-1deg);
+  box-shadow: var(--shadow-float);
+}
+
+.draw-card .deck-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.draw-card .deck-text {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.drawn-card-result {
+  max-width: 440px;
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  box-shadow: var(--shadow-lg);
+  animation: flipIn 0.5s ease-out;
+  text-align: left;
+}
+
+.drawn-card-theme {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  background: var(--sage-light);
+  color: var(--sage-dark);
+  border-radius: var(--radius-full);
+  margin-bottom: 12px;
+}
+
+.drawn-card-quote {
+  font-family: var(--font-serif);
+  font-size: 1.28rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.drawn-card-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+/* ============================================================
+   불교 지혜 카드 8선 그리드
+   ============================================================ */
+.wisdom-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.wisdom-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-fast);
+}
+
+.wisdom-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--sage-border);
+  box-shadow: var(--shadow-md);
+}
+
+.wisdom-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.wisdom-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--bg-soft);
+  color: var(--text-muted);
+}
+
+.wisdom-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.wisdom-card-summary {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.wisdom-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+  font-size: 0.85rem;
+}
+
+/* ============================================================
+   푸터 (Footer) & 패밀리 사이트 바
+   ============================================================ */
+.family-footer-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.family-footer-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-subtle);
+  margin-bottom: 10px;
+}
+
+.family-links-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.family-link-item {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--transition-fast);
+}
+
+.family-link-item:hover {
+  color: var(--sage-primary);
+  text-decoration: underline;
+}
+
+.site-footer {
+  text-align: center;
+  padding: 24px 0 40px;
+  color: var(--text-subtle);
+  font-size: 0.85rem;
+  line-height: 1.8;
+  border-top: 1px solid var(--border-light);
+}
+
+.footer-privacy-link {
+  color: var(--text-muted);
+  text-decoration: underline;
+}
+
+.footer-privacy-link:hover {
+  color: var(--sage-primary);
+}
+
+/* 토스트 알림 */
+.toast-msg {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: rgba(44, 53, 49, 0.92);
+  color: #FFF;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-size: 0.92rem;
+  z-index: 9999;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(6px);
+}
+
+.toast-msg.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* 애니메이션 */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes flipIn {
+  from {
+    opacity: 0;
+    transform: rotateY(90deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+}
+
+/* 모바일 반응형 */
+@media (max-width: 680px) {
+  .hero-title {
+    font-size: 1.65rem;
+  }
+  .hero-section {
+    padding: 24px 12px 20px;
+  }
+  .daily-card-container {
+    padding: 22px 18px;
+  }
+  .daily-quote-text {
+    font-size: 1.15rem;
+  }
+  .breathing-circle-wrapper {
+    width: 200px;
+    height: 200px;
+  }
+  .circle-pulse-inner {
+    width: 150px;
+    height: 150px;
+  }
+  .emotion-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .drawn-card-result {
+    padding: 20px 16px;
+  }
+}

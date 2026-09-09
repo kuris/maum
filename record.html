@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음 기록장 - 마음아 놀자</title>
+  <meta name="description" content="오늘의 감정을 돌아보고, 내려놓고 싶은 것과 감사한 것을 차분히 적어보는 3줄 마음 일기입니다.">
+  <link rel="canonical" href="https://maum.chatgpts.kr/record">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="마음아 놀자">
+  <meta property="og:title" content="마음 기록장 - 마음아 놀자">
+  <meta property="og:description" content="감정 기록, 내려놓음과 감사의 3줄 성찰 일기">
+  <meta property="og:url" content="https://maum.chatgpts.kr/record">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%AA%B7%3C%2Ftext%3E%3C%2Fsvg%3E">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css?v=20260909">
+  <link rel="stylesheet" href="/css/cg-auth.css?v=20260909">
+
+  <!-- Supabase & Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-config.js?v=20260909"></script>
+  <script defer src="/js/cg-auth.js?v=20260909" data-service="maum" data-mount="#cg-auth-slot"></script>
+  <script defer src="/js/track.js?v=20260909" data-service="maum"></script>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 헤더 -->
+    <header class="site-head">
+      <a href="/" class="brand-logo">
+        <span class="logo-symbol">🪷</span>
+        <span>마음아 <span class="dot">놀자</span></span>
+      </a>
+      
+      <div class="header-right">
+        <div id="cg-auth-slot"></div>
+        <div class="family-nav-wrap">
+          <button type="button" class="family-btn" id="family-btn">다른 놀자 서비스 ▾</button>
+          <div class="family-dropdown" id="family-dropdown">
+            <a href="https://hanja.chatgpts.kr" target="_blank" rel="noopener">📖 한자야 놀자</a>
+            <a href="https://voca.chatgpts.kr" target="_blank" rel="noopener">⚡ 단어야 놀자</a>
+            <a href="https://history.chatgpts.kr" target="_blank" rel="noopener">📜 역사야 놀자</a>
+            <a href="https://fortune.chatgpts.kr" target="_blank" rel="noopener">🔮 운세야 놀자</a>
+            <a href="https://mindtest.chatgpts.kr" target="_blank" rel="noopener">🧠 마인드테스트</a>
+            <a href="https://bible.chatgpts.kr" target="_blank" rel="noopener">✝️ 성경아 놀자</a>
+            <a href="https://work.chatgpts.kr" target="_blank" rel="noopener">💼 워크야 놀자</a>
+            <a href="https://money.chatgpts.kr" target="_blank" rel="noopener">💰 머니야 놀자</a>
+            <a href="https://tools.chatgpts.kr" target="_blank" rel="noopener">🛠️ 문서야 놀자</a>
+            <a href="https://chatgpts.kr" target="_blank" rel="noopener">🏠 chatgpts.kr</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 네비게이션 칩스 -->
+    <nav class="nav-scroll" aria-label="메인 메뉴">
+      <a href="/" class="nav-chip">🏠 홈</a>
+      <a href="/today" class="nav-chip">📜 오늘의 마음</a>
+      <a href="/meditation" class="nav-chip">🧘 호흡 명상</a>
+      <a href="/wisdom" class="nav-chip">🪷 불교 지혜</a>
+      <a href="/cards" class="nav-chip">🎴 마음 카드</a>
+      <a href="/record" class="nav-chip active">📝 마음 기록장</a>
+      <a href="/my" class="nav-chip">👤 내 기록실</a>
+    </nav>
+
+    <!-- 인트로 -->
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-family: var(--font-serif); font-size: 1.8rem; color: var(--text-main); margin-bottom: 6px;">
+        📝 오늘 하루 마음 기록장
+      </h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        내 감정을 솔직하게 인정하고, 무거운 짐은 내려놓으며, 고마운 순간을 새기는 3줄 성찰 일기입니다.
+      </p>
+    </div>
+
+    <!-- 작성 폼 카드 -->
+    <div class="daily-card-container" style="padding: 32px 28px; margin-bottom: 36px;">
+      <!-- 1. 감정 선택 -->
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; color: var(--text-main);">
+          1. 오늘 내 마음의 주된 날씨 (감정)
+        </label>
+        <div class="emotion-grid" id="full-emotion-grid">
+          <!-- JS 렌더링 -->
+        </div>
+      </div>
+
+      <!-- 2. 오늘 내려놓을 것 (Letting Go) -->
+      <div style="margin-bottom: 24px;">
+        <label style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 1.02rem; margin-bottom: 8px; color: var(--text-main);">
+          <span>🍃</span> 2. 오늘 밤 내려놓고 싶은 생각이나 걱정
+        </label>
+        <input type="text" id="input-let-go" class="record-input" placeholder="예: 타인의 무심한 말 한마디, 지나간 일에 대한 후회, 완벽해야 한다는 부담" />
+      </div>
+
+      <!-- 3. 오늘 감사한 것 (Gratitude) -->
+      <div style="margin-bottom: 24px;">
+        <label style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 1.02rem; margin-bottom: 8px; color: var(--text-main);">
+          <span>☀️</span> 3. 오늘 나를 미소 짓게 한 감사한 순간
+        </label>
+        <input type="text" id="input-gratitude" class="record-input" placeholder="예: 점심 후 마신 따뜻한 커피, 동료의 배려, 맑은 하늘" />
+      </div>
+
+      <!-- 4. 한 줄 성찰 메모 -->
+      <div style="margin-bottom: 28px;">
+        <label style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 1.02rem; margin-bottom: 8px; color: var(--text-main);">
+          <span>✍️</span> 4. 나 자신에게 건네는 한 줄 다정한 말
+        </label>
+        <textarea id="input-note" class="record-input" rows="3" placeholder="오늘도 수고 많았어. 내일은 더 가볍고 자유롭게 걸어가자."></textarea>
+      </div>
+
+      <!-- 하단 버튼 및 안내 -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 16px; border-top: 1px solid var(--border-light);">
+        <div class="record-privacy-hint" style="max-width: 460px;">
+          <span>🔒</span> 작성한 모든 내용은 오직 본인만 확인할 수 있으며 안전하게 암호화 보관됩니다.
+        </div>
+        <button type="button" class="btn-primary" id="save-full-log-btn" style="padding: 12px 28px; font-size: 1.02rem;">
+          <span>🌸</span> <span>마음 일기 저장하기</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 최근 작성한 마음 일기 타임라인 -->
+    <section style="margin-bottom: 48px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="font-family: var(--font-serif); font-size: 1.3rem; color: var(--text-main);">
+          📖 최근 나의 마음 일기
+        </h2>
+        <a href="/my" class="section-link">전체 통계 및 보관함 보기 →</a>
+      </div>
+
+      <div id="recent-logs-list" style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- JS 렌더링 -->
+      </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="site-footer">
+      <p>마음아 놀자 · <a href="https://chatgpts.kr/page/개인정보-처리방침" target="_blank" rel="noopener" class="footer-privacy-link">개인정보 처리방침</a></p>
+      <p style="margin-top: 6px; font-size: 0.8rem;">© 2026 chatgpts.kr · All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/maum-data.js?v=20260909"></script>
+  <script src="/js/record.js?v=20260909"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 드롭다운
+      const fBtn = document.getElementById('family-btn');
+      const fDrop = document.getElementById('family-dropdown');
+      if (fBtn && fDrop) {
+        fBtn.addEventListener('click', (e) => { e.stopPropagation(); fDrop.classList.toggle('show'); });
+        document.addEventListener('click', () => fDrop.classList.remove('show'));
+      }
+
+      const gridMount = document.getElementById('full-emotion-grid');
+      const letGoInput = document.getElementById('input-let-go');
+      const gratInput = document.getElementById('input-gratitude');
+      const noteInput = document.getElementById('input-note');
+      const saveBtn = document.getElementById('save-full-log-btn');
+      const listMount = document.getElementById('recent-logs-list');
+
+      let currentMood = 'peace';
+
+      // 감정 렌더링
+      gridMount.innerHTML = MAUM_DATA.emotions.map(e => `
+        <button type="button" class="emotion-pill ${e.key === currentMood ? 'selected' : ''}" data-mood="${e.key}">
+          <span class="emo-icon">${e.icon}</span>
+          <span class="emo-label">${e.label}</span>
+          <span style="font-size: 0.75rem; color: var(--text-subtle);">${e.desc}</span>
+        </button>
+      `).join('');
+
+      gridMount.querySelectorAll('.emotion-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          gridMount.querySelectorAll('.emotion-pill').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          currentMood = btn.getAttribute('data-mood');
+        });
+      });
+
+      // 저장 액션
+      saveBtn.addEventListener('click', async () => {
+        const success = await window.MaumRecord.saveDailyLog({
+          mood: currentMood,
+          let_go: letGoInput.value,
+          gratitude: gratInput.value,
+          note: noteInput.value
+        });
+
+        if (success) {
+          letGoInput.value = '';
+          gratInput.value = '';
+          noteInput.value = '';
+          renderLogs();
+        }
+      });
+
+      // 최근 일기 리스트 렌더링
+      function renderLogs() {
+        const logs = window.MaumRecord ? window.MaumRecord.getLocalLogs() : [];
+        if (logs.length === 0) {
+          listMount.innerHTML = `
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; text-align: center; color: var(--text-subtle);">
+              아직 작성된 마음 일기가 없습니다. 오늘의 첫 마음을 기록해보세요.
+            </div>
+          `;
+          return;
+        }
+
+        listMount.innerHTML = logs.slice(0, 10).map(log => {
+          const emo = MAUM_DATA.emotions.find(e => e.key === log.mood) || { icon: '🌿', label: log.mood };
+          const d = new Date(log.created_at || Date.now());
+          const dateStr = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${d.getMinutes() < 10 ? '0' : ''}${d.getMinutes()}`;
+
+          return `
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px 20px; box-shadow: var(--shadow-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+                  <span>${emo.icon}</span> ${emo.label}
+                </span>
+                <span style="font-size: 0.8rem; color: var(--text-subtle);">${dateStr}</span>
+              </div>
+
+              ${log.let_go ? `
+                <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 4px;">
+                  <strong style="color: var(--lotus);">[내려놓음]</strong> ${log.let_go}
+                </div>
+              ` : ''}
+
+              ${log.gratitude ? `
+                <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 4px;">
+                  <strong style="color: var(--gold);">[감사]</strong> ${log.gratitude}
+                </div>
+              ` : ''}
+
+              ${log.note ? `
+                <div style="font-size: 0.92rem; color: var(--text-main); margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-light); font-family: var(--font-serif);">
+                  "${log.note}"
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+      }
+
+      renderLogs();
+    });
+  </script>
+</body>
+</html>

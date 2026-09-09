@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /my
+Disallow: /my.html
+Disallow: /api/
+
+Sitemap: https://maum.chatgpts.kr/sitemap.xml

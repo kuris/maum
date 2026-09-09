@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>호흡 명상 - 마음아 놀자</title>
+  <meta name="description" content="부드러운 시각 가이드와 싱잉볼 소리에 맞추어 들숨과 날숨을 고르는 마음챙김 호흡 명상. 복잡한 생각을 비우고 평온을 되찾아보세요.">
+  <link rel="canonical" href="https://maum.chatgpts.kr/meditation">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="마음아 놀자">
+  <meta property="og:title" content="호흡 명상 - 마음아 놀자">
+  <meta property="og:description" content="1분, 3분, 5분 나를 위한 고요한 숨쉬기 시간">
+  <meta property="og:url" content="https://maum.chatgpts.kr/meditation">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%AA%B7%3C%2Ftext%3E%3C%2Fsvg%3E">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css?v=20260909">
+  <link rel="stylesheet" href="/css/cg-auth.css?v=20260909">
+
+  <!-- Supabase & Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-config.js?v=20260909"></script>
+  <script defer src="/js/cg-auth.js?v=20260909" data-service="maum" data-mount="#cg-auth-slot"></script>
+  <script defer src="/js/track.js?v=20260909" data-service="maum"></script>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 헤더 -->
+    <header class="site-head">
+      <a href="/" class="brand-logo">
+        <span class="logo-symbol">🪷</span>
+        <span>마음아 <span class="dot">놀자</span></span>
+      </a>
+      
+      <div class="header-right">
+        <div id="cg-auth-slot"></div>
+        <div class="family-nav-wrap">
+          <button type="button" class="family-btn" id="family-btn">다른 놀자 서비스 ▾</button>
+          <div class="family-dropdown" id="family-dropdown">
+            <a href="https://hanja.chatgpts.kr" target="_blank" rel="noopener">📖 한자야 놀자</a>
+            <a href="https://voca.chatgpts.kr" target="_blank" rel="noopener">⚡ 단어야 놀자</a>
+            <a href="https://history.chatgpts.kr" target="_blank" rel="noopener">📜 역사야 놀자</a>
+            <a href="https://fortune.chatgpts.kr" target="_blank" rel="noopener">🔮 운세야 놀자</a>
+            <a href="https://mindtest.chatgpts.kr" target="_blank" rel="noopener">🧠 마인드테스트</a>
+            <a href="https://bible.chatgpts.kr" target="_blank" rel="noopener">✝️ 성경아 놀자</a>
+            <a href="https://work.chatgpts.kr" target="_blank" rel="noopener">💼 워크야 놀자</a>
+            <a href="https://money.chatgpts.kr" target="_blank" rel="noopener">💰 머니야 놀자</a>
+            <a href="https://tools.chatgpts.kr" target="_blank" rel="noopener">🛠️ 문서야 놀자</a>
+            <a href="https://chatgpts.kr" target="_blank" rel="noopener">🏠 chatgpts.kr</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 네비게이션 칩스 -->
+    <nav class="nav-scroll" aria-label="메인 메뉴">
+      <a href="/" class="nav-chip">🏠 홈</a>
+      <a href="/today" class="nav-chip">📜 오늘의 마음</a>
+      <a href="/meditation" class="nav-chip active">🧘 호흡 명상</a>
+      <a href="/wisdom" class="nav-chip">🪷 불교 지혜</a>
+      <a href="/cards" class="nav-chip">🎴 마음 카드</a>
+      <a href="/record" class="nav-chip">📝 마음 기록장</a>
+      <a href="/my" class="nav-chip">👤 내 기록실</a>
+    </nav>
+
+    <!-- 명상 룸 컨테이너 -->
+    <main class="meditation-box" style="padding: 48px 24px; min-height: 540px;">
+      <span class="daily-badge" style="margin-bottom: 16px;">🌿 온전한 호흡의 순간</span>
+      <h1 style="font-family: var(--font-serif); font-size: 2rem; color: var(--text-main); margin-bottom: 8px;">
+        마음챙김 호흡 명상
+      </h1>
+      <p style="color: var(--text-muted); font-size: 1rem; max-width: 520px; margin: 0 auto 24px;">
+        어깨의 힘을 빼고 턱을 가볍게 당겨보세요. 원의 움직임에 맞추어 깊고 자연스럽게 숨을 쉬어봅니다.
+      </p>
+
+      <!-- 호흡법 선택 탭 -->
+      <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+        <button type="button" class="icon-btn active" id="tech-box-btn">
+          <span>📦</span> <span>박스 호흡 (4-4-4-4)</span>
+        </button>
+        <button type="button" class="icon-btn" id="tech-calm-btn">
+          <span>🌊</span> <span>이완 호흡 (4-7-8)</span>
+        </button>
+      </div>
+
+      <!-- 호흡 서클 애니메이션 -->
+      <div class="breathing-circle-wrapper ready" style="width: 260px; height: 260px; margin: 24px auto 32px;">
+        <div class="circle-pulse-outer"></div>
+        <div class="circle-pulse-inner" style="width: 190px; height: 190px;">
+          <div class="breath-phase-text" id="breath-phase-text" style="font-size: 1.6rem;">준비</div>
+          <div class="breath-timer-count" id="breath-timer-display" style="font-size: 1.25rem;">1:00</div>
+        </div>
+      </div>
+
+      <!-- 상태 안내 문구 -->
+      <div id="breath-label-text" style="font-size: 1.1rem; font-weight: 700; color: var(--sage-dark); min-height: 32px; margin-bottom: 24px;">
+        시작 버튼을 눌러 마음의 숨을 고르세요
+      </div>
+
+      <!-- 시간 및 컨트롤 -->
+      <div class="meditation-controls" style="gap: 16px;">
+        <div class="mode-selector">
+          <button type="button" class="mode-btn active" data-seconds="60">1분</button>
+          <button type="button" class="mode-btn" data-seconds="180">3분</button>
+          <button type="button" class="mode-btn" data-seconds="300">5분</button>
+        </div>
+
+        <button type="button" class="btn-primary" id="med-start-btn" style="padding: 14px 28px; font-size: 1.05rem;">
+          <span>▶️</span> <span>명상 시작</span>
+        </button>
+
+        <button type="button" class="btn-secondary" id="med-reset-btn" title="초기화">
+          <span>🔄</span> <span>초기화</span>
+        </button>
+
+        <button type="button" class="icon-btn" id="med-sound-btn">
+          <span>🔔</span> <span>소리 켬</span>
+        </button>
+      </div>
+
+      <!-- 명상 안내 팁 -->
+      <div style="margin-top: 48px; padding-top: 24px; border-top: 1px dashed var(--border); text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+          💡 호흡 명상 길잡이
+        </h3>
+        <ul style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; padding-left: 20px;">
+          <li>숨을 억지로 참거나 늘리려 하지 말고, 몸이 숨 쉬는 자연스러운 리듬을 따라가세요.</li>
+          <li>생각이 끼어들어도 자책하지 마세요. '생각이 일어났구나' 알아차리고 다시 숨으로 돌아오면 됩니다.</li>
+          <li>명상이 완료되면 싱잉볼 차임벨과 함께 기록이 안전하게 저장됩니다.</li>
+        </ul>
+      </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="site-footer">
+      <p>마음아 놀자 · <a href="https://chatgpts.kr/page/개인정보-처리방침" target="_blank" rel="noopener" class="footer-privacy-link">개인정보 처리방침</a></p>
+      <p style="margin-top: 6px; font-size: 0.8rem;">© 2026 chatgpts.kr · All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/maum-data.js?v=20260909"></script>
+  <script src="/js/meditation.js?v=20260909"></script>
+  <script src="/js/record.js?v=20260909"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 드롭다운
+      const fBtn = document.getElementById('family-btn');
+      const fDrop = document.getElementById('family-dropdown');
+      if (fBtn && fDrop) {
+        fBtn.addEventListener('click', (e) => { e.stopPropagation(); fDrop.classList.toggle('show'); });
+        document.addEventListener('click', () => fDrop.classList.remove('show'));
+      }
+
+      const startBtn = document.getElementById('med-start-btn');
+      const resetBtn = document.getElementById('med-reset-btn');
+      const soundBtn = document.getElementById('med-sound-btn');
+      const modeBtns = document.querySelectorAll('.mode-btn');
+      const boxBtn = document.getElementById('tech-box-btn');
+      const calmBtn = document.getElementById('tech-calm-btn');
+
+      startBtn.addEventListener('click', () => {
+        if (window.MaumMeditation.isRunning()) {
+          window.MaumMeditation.pause();
+          startBtn.innerHTML = '<span>▶️</span> <span>계속하기</span>';
+        } else {
+          window.MaumMeditation.start();
+          startBtn.innerHTML = '<span>⏸️</span> <span>잠시멈춤</span>';
+        }
+      });
+
+      resetBtn.addEventListener('click', () => {
+        window.MaumMeditation.reset();
+        startBtn.innerHTML = '<span>▶️</span> <span>명상 시작</span>';
+      });
+
+      soundBtn.addEventListener('click', () => {
+        const enabled = window.MaumMeditation.toggleSound();
+        soundBtn.innerHTML = enabled ? '<span>🔔</span> <span>소리 켬</span>' : '<span>🔕</span> <span>소리 끔</span>';
+        if (enabled) window.MaumMeditation.playChime();
+      });
+
+      boxBtn.addEventListener('click', () => {
+        boxBtn.classList.add('active');
+        calmBtn.classList.remove('active');
+        window.MaumMeditation.setTechnique('box');
+        window.MaumMeditation.reset();
+        startBtn.innerHTML = '<span>▶️</span> <span>명상 시작</span>';
+      });
+
+      calmBtn.addEventListener('click', () => {
+        calmBtn.classList.add('active');
+        boxBtn.classList.remove('active');
+        window.MaumMeditation.setTechnique('calm');
+        window.MaumMeditation.reset();
+        startBtn.innerHTML = '<span>▶️</span> <span>명상 시작</span>';
+      });
+
+      modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          modeBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const seconds = parseInt(btn.getAttribute('data-seconds'), 10) || 60;
+          window.MaumMeditation.setDuration(seconds);
+          startBtn.innerHTML = '<span>▶️</span> <span>명상 시작</span>';
+        });
+      });
+
+      window.addEventListener('maum:meditation-state', (e) => {
+        if (e.detail.status === 'finish') {
+          startBtn.innerHTML = '<span>▶️</span> <span>다시 시작</span>';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

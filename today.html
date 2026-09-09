@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘의 마음 - 마음아 놀자</title>
+  <meta name="description" content="매일 자정 찾아오는 마음챙김 지혜 글귀와 일상 속 작은 실천. 오늘 하루 내 마음에 평온의 닻을 내려보세요.">
+  <link rel="canonical" href="https://maum.chatgpts.kr/today">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="마음아 놀자">
+  <meta property="og:title" content="오늘의 마음 - 마음아 놀자">
+  <meta property="og:description" content="매일 새롭게 만나는 불교의 지혜와 마음 성찰 글귀">
+  <meta property="og:url" content="https://maum.chatgpts.kr/today">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%AA%B7%3C%2Ftext%3E%3C%2Fsvg%3E">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css?v=20260909">
+  <link rel="stylesheet" href="/css/cg-auth.css?v=20260909">
+
+  <!-- Supabase & Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-config.js?v=20260909"></script>
+  <script defer src="/js/cg-auth.js?v=20260909" data-service="maum" data-mount="#cg-auth-slot"></script>
+  <script defer src="/js/track.js?v=20260909" data-service="maum"></script>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 헤더 -->
+    <header class="site-head">
+      <a href="/" class="brand-logo">
+        <span class="logo-symbol">🪷</span>
+        <span>마음아 <span class="dot">놀자</span></span>
+      </a>
+      
+      <div class="header-right">
+        <div id="cg-auth-slot"></div>
+        <div class="family-nav-wrap">
+          <button type="button" class="family-btn" id="family-btn">다른 놀자 서비스 ▾</button>
+          <div class="family-dropdown" id="family-dropdown">
+            <a href="https://hanja.chatgpts.kr" target="_blank" rel="noopener">📖 한자야 놀자</a>
+            <a href="https://voca.chatgpts.kr" target="_blank" rel="noopener">⚡ 단어야 놀자</a>
+            <a href="https://history.chatgpts.kr" target="_blank" rel="noopener">📜 역사야 놀자</a>
+            <a href="https://fortune.chatgpts.kr" target="_blank" rel="noopener">🔮 운세야 놀자</a>
+            <a href="https://mindtest.chatgpts.kr" target="_blank" rel="noopener">🧠 마인드테스트</a>
+            <a href="https://bible.chatgpts.kr" target="_blank" rel="noopener">✝️ 성경아 놀자</a>
+            <a href="https://work.chatgpts.kr" target="_blank" rel="noopener">💼 워크야 놀자</a>
+            <a href="https://money.chatgpts.kr" target="_blank" rel="noopener">💰 머니야 놀자</a>
+            <a href="https://tools.chatgpts.kr" target="_blank" rel="noopener">🛠️ 문서야 놀자</a>
+            <a href="https://chatgpts.kr" target="_blank" rel="noopener">🏠 chatgpts.kr</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 네비게이션 칩스 -->
+    <nav class="nav-scroll" aria-label="메인 메뉴">
+      <a href="/" class="nav-chip">🏠 홈</a>
+      <a href="/today" class="nav-chip active">📜 오늘의 마음</a>
+      <a href="/meditation" class="nav-chip">🧘 호흡 명상</a>
+      <a href="/wisdom" class="nav-chip">🪷 불교 지혜</a>
+      <a href="/cards" class="nav-chip">🎴 마음 카드</a>
+      <a href="/record" class="nav-chip">📝 마음 기록장</a>
+      <a href="/my" class="nav-chip">👤 내 기록실</a>
+    </nav>
+
+    <!-- 상단 날짜 선택 컨트롤 -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h1 style="font-family: var(--font-serif); font-size: 1.6rem; color: var(--text-main);">
+          📜 오늘의 마음 성찰
+        </h1>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">
+          매일 새로운 지혜로 마음을 맑히고, 지나간 날들의 지혜도 다시 꺼내볼 수 있습니다.
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label for="day-select" style="font-size: 0.88rem; color: var(--text-subtle);">성찰일 선택:</label>
+        <select id="day-select" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-card); font-family: inherit; font-size: 0.9rem;">
+          <!-- 1일 ~ 31일 JS에서 채움 -->
+        </select>
+      </div>
+    </div>
+
+    <!-- 메인 데일리 성찰 카드 뷰어 -->
+    <div class="daily-card-container" id="today-detail-mount" style="padding: 36px 32px;">
+      <!-- JS 렌더링 -->
+    </div>
+
+    <!-- 31일 성찰 둘러보기 그리드 -->
+    <section style="margin-top: 36px; margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 16px;">
+        🗓️ 31일 마음의 여정 전체보기
+      </h2>
+      <div id="days-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px;">
+        <!-- JS 렌더링 -->
+      </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="site-footer">
+      <p>마음아 놀자 · <a href="https://chatgpts.kr/page/개인정보-처리방침" target="_blank" rel="noopener" class="footer-privacy-link">개인정보 처리방침</a></p>
+      <p style="margin-top: 6px; font-size: 0.8rem;">© 2026 chatgpts.kr · All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/maum-data.js?v=20260909"></script>
+  <script src="/js/record.js?v=20260909"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 드롭다운 토글
+      const fBtn = document.getElementById('family-btn');
+      const fDrop = document.getElementById('family-dropdown');
+      if (fBtn && fDrop) {
+        fBtn.addEventListener('click', (e) => { e.stopPropagation(); fDrop.classList.toggle('show'); });
+        document.addEventListener('click', () => fDrop.classList.remove('show'));
+      }
+
+      const selectEl = document.getElementById('day-select');
+      const mountEl = document.getElementById('today-detail-mount');
+      const gridEl = document.getElementById('days-grid');
+
+      const today = new Date();
+      const currentDay = today.getDate(); // 1~31
+
+      // 셀렉트 박스 채우기
+      for (let d = 1; d <= 31; d++) {
+        const item = getDailyByDayIndex(d);
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = `${d}일 : ${item.theme} - ${item.title}`;
+        if (d === currentDay) opt.selected = true;
+        selectEl.appendChild(opt);
+      }
+
+      function renderDay(dayNum) {
+        const data = getDailyByDayIndex(dayNum);
+        const isFav = window.MaumRecord ? window.MaumRecord.isFavorite('daily', data.id) : false;
+
+        mountEl.innerHTML = `
+          <div class="daily-header">
+            <span class="daily-badge">🪷 ${dayNum}일차 마음 · ${data.theme}</span>
+            <span class="daily-date">${dayNum === currentDay ? '오늘의 성찰' : `${dayNum}일의 지혜`}</span>
+          </div>
+
+          <h2 style="font-family: var(--font-serif); font-size: 1.6rem; margin-bottom: 16px; color: var(--text-main);">
+            ${data.title}
+          </h2>
+
+          <div class="daily-quote-box">
+            <div class="daily-quote-text">"${data.quote}"</div>
+            <div class="daily-buddhist-term">
+              <span>📖</span> ${data.buddhistTerm}
+            </div>
+          </div>
+
+          <div class="daily-commentary" style="font-size: 1.05rem; margin-bottom: 28px;">
+            ${data.commentary}
+          </div>
+
+          <div class="daily-practice-card">
+            <div class="practice-icon">🌱</div>
+            <div class="practice-content">
+              <h4>오늘의 작은 실천 과제</h4>
+              <p>${data.practice}</p>
+            </div>
+          </div>
+
+          <div class="daily-card-footer">
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="icon-btn ${isFav ? 'active' : ''}" id="fav-btn">
+                <span>${isFav ? '❤️' : '🤍'}</span> <span>${isFav ? '보관됨' : '보관하기'}</span>
+              </button>
+              <button type="button" class="icon-btn" id="copy-btn">
+                <span>📋</span> <span>글귀 복사</span>
+              </button>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+              <a href="/meditation" class="btn-primary" style="padding: 8px 18px; font-size: 0.88rem;">
+                <span>🧘</span> <span>이 마음으로 호흡하기</span>
+              </a>
+            </div>
+          </div>
+        `;
+
+        // 버튼 바인딩
+        const favBtn = document.getElementById('fav-btn');
+        if (favBtn && window.MaumRecord) {
+          favBtn.addEventListener('click', async () => {
+            const nowFav = await window.MaumRecord.toggleFavorite({
+              content_type: 'daily',
+              content_key: data.id,
+              title: data.title,
+              text: data.quote,
+              category: data.theme
+            });
+            favBtn.classList.toggle('active', nowFav);
+            favBtn.innerHTML = `<span>${nowFav ? '❤️' : '🤍'}</span> <span>${nowFav ? '보관됨' : '보관하기'}</span>`;
+          });
+        }
+
+        const copyBtn = document.getElementById('copy-btn');
+        if (copyBtn) {
+          copyBtn.addEventListener('click', async () => {
+            const text = `[마음아 놀자 - ${data.theme}]\n"${data.quote}"\n\n${data.practice}\nhttps://maum.chatgpts.kr`;
+            try {
+              await navigator.clipboard.writeText(text);
+              if (window.showToast) window.showToast('📋 성찰 글귀가 복사되었습니다.');
+            } catch (_) {}
+          });
+        }
+
+        // 그리드 활성화 상태 갱신
+        document.querySelectorAll('.day-tile').forEach(tile => {
+          tile.style.borderColor = parseInt(tile.getAttribute('data-day'), 10) === dayNum ? 'var(--sage-primary)' : 'var(--border)';
+          tile.style.background = parseInt(tile.getAttribute('data-day'), 10) === dayNum ? 'var(--sage-light)' : 'var(--bg-card)';
+        });
+      }
+
+      // 31일 그리드 렌더링
+      gridEl.innerHTML = MAUM_DATA.daily.map(d => `
+        <button type="button" class="day-tile" data-day="${d.dayIndex}" style="padding: 12px 10px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg-card); text-align: center; transition: all 0.2s;">
+          <div style="font-size: 0.8rem; color: var(--text-subtle);">${d.dayIndex}일</div>
+          <div style="font-weight: 700; font-size: 0.92rem; color: var(--text-main); margin: 2px 0;">${d.theme}</div>
+          <div style="font-size: 0.76rem; color: var(--sage-dark);">${d.dayIndex === currentDay ? '★ 오늘' : '보기'}</div>
+        </button>
+      `).join('');
+
+      gridEl.querySelectorAll('.day-tile').forEach(tile => {
+        tile.addEventListener('click', () => {
+          const d = parseInt(tile.getAttribute('data-day'), 10);
+          selectEl.value = d;
+          renderDay(d);
+          window.scrollTo({ top: 160, behavior: 'smooth' });
+        });
+      });
+
+      selectEl.addEventListener('change', () => {
+        renderDay(parseInt(selectEl.value, 10));
+      });
+
+      renderDay(currentDay);
+    });
+  </script>
+</body>
+</html>
