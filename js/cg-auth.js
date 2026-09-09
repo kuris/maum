@@ -1,3 +1,4 @@
+/* 이 파일은 _shared/cg-auth.js 의 복사본입니다. 직접 수정하지 말고 _shared 에서 고친 뒤 sync.sh 를 실행하세요. */
 /* ============================================================
    CGAuth - chatgpts.kr 공통 로그인 모듈 (Google 로그인 전용)
    ------------------------------------------------------------
@@ -46,8 +47,8 @@
     hanja: 'login.html',
     voca: 'login.html',
     history: 'login.html',
-    fortune: 'login.html',
-    maum: 'my.html'
+    fortune: 'login.html'
+    // mindtest / work / money / tools 는 아직 내 기록 페이지가 없어 링크를 숨깁니다
   };
 
   var DEFAULT_HINT = '로그인하면 기록과 결과를 저장할 수 있어요.';
