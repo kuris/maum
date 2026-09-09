@@ -201,8 +201,15 @@
     }
   }
 
-  // CGAuth 인증 상태 변화 감지
-  window.addEventListener('cg-auth:change', (e) => {
+  // CGAuth 인증 상태 변화 감지 및 동기화
+  if (global.CGAuth && typeof global.CGAuth.onChange === 'function') {
+    global.CGAuth.onChange((detail) => {
+      if (detail && detail.user) {
+        syncLocalToCloud();
+      }
+    });
+  }
+  document.addEventListener('cg:auth-changed', (e) => {
     if (e.detail && e.detail.user) {
       syncLocalToCloud();
     }

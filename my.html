@@ -129,6 +129,7 @@
 
   <!-- Scripts -->
   <script src="/js/maum-data.js?v=20260909"></script>
+  <script src="/js/ambient-sound.js?v=20260909"></script>
   <script src="/js/record.js?v=20260909"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -153,28 +154,37 @@
 
       let currentTab = 'logs';
 
-      function renderUserStatus() {
-        const user = window.CGAuth && window.CGAuth.user;
-        const profile = window.CGAuth && window.CGAuth.profile;
+      function renderUserStatus(authDetail) {
+        const auth = window.CGAuth || {};
+        const user = (authDetail && authDetail.user) || auth.user;
+        const profile = (authDetail && authDetail.profile) || auth.profile;
+        const isAdmin = (authDetail && authDetail.isAdmin) || (typeof auth.isAdmin === 'function' && auth.isAdmin());
 
         if (user) {
+          const displayName = (profile && profile.display_name) || (user.user_metadata && (user.user_metadata.full_name || user.user_metadata.name)) || (user.email ? user.email.split('@')[0] : '수행자');
+          const email = user.email || '';
+
           statusCard.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--sage-light); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--sage-light); border: 2px solid var(--sage-primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                   🪷
                 </div>
                 <div>
-                  <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">
-                    ${profile && profile.display_name ? profile.display_name : (user.email || '수행자')} 님
+                  <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                    <span>${displayName} 님</span>
+                    ${isAdmin ? '<span style="font-size: 0.72rem; padding: 2px 7px; background: var(--sage-dark); color: #fff; border-radius: 4px; font-weight: 600;">관리자</span>' : ''}
                   </div>
-                  <div style="font-size: 0.82rem; color: var(--sage-dark);">
-                    ☁️ Google 계정 클라우드 동기화 연결됨
+                  <div style="font-size: 0.84rem; color: var(--sage-dark); margin-top: 2px;">
+                    ☁️ ${email} · 구글 계정 클라우드 동기화 연결됨
                   </div>
                 </div>
               </div>
-              <div style="font-size: 0.85rem; color: var(--text-subtle);">
-                모든 마음 기록이 안전하게 보호됩니다.
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 0.85rem; color: var(--text-subtle);">모든 마음 기록이 안전하게 보관 중입니다.</span>
+                <button type="button" class="btn-secondary" onclick="if(window.CGAuth) window.CGAuth.logout();" style="padding: 6px 14px; font-size: 0.82rem;">
+                  로그아웃
+                </button>
               </div>
             </div>
           `;
@@ -197,13 +207,41 @@
         }
       }
 
-      function refreshAll() {
-        const logs = JSON.parse(localStorage.getItem('maum_daily_logs') || '[]');
-        const favs = JSON.parse(localStorage.getItem('maum_favorites') || '[]');
-        const meds = JSON.parse(localStorage.getItem('maum_meditation_logs') || '[]');
+      async function refreshAll() {
+        let logs = JSON.parse(localStorage.getItem('maum_daily_logs') || '[]');
+        let favs = JSON.parse(localStorage.getItem('maum_favorites') || '[]');
+        let meds = JSON.parse(localStorage.getItem('maum_meditation_logs') || '[]');
+
+        // 1. 로그인 상태인 경우 Supabase 클라우드 데이터 백필/동기화 시도
+        const auth = window.CGAuth;
+        if (auth && auth.user && auth.client) {
+          try {
+            const uid = auth.user.id;
+            const [logsRes, favsRes, medsRes] = await Promise.all([
+              auth.client.from('maum_daily_logs').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
+              auth.client.from('maum_favorites').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
+              auth.client.from('maum_meditation_logs').select('*').eq('user_id', uid).order('created_at', { ascending: false })
+            ]);
+
+            if (logsRes.data && logsRes.data.length > 0) {
+              logs = logsRes.data;
+              localStorage.setItem('maum_daily_logs', JSON.stringify(logs));
+            }
+            if (favsRes.data && favsRes.data.length > 0) {
+              favs = favsRes.data;
+              localStorage.setItem('maum_favorites', JSON.stringify(favs));
+            }
+            if (medsRes.data && medsRes.data.length > 0) {
+              meds = medsRes.data;
+              localStorage.setItem('maum_meditation_logs', JSON.stringify(meds));
+            }
+          } catch (e) {
+            console.warn('[My] Cloud sync skipped:', e);
+          }
+        }
 
         // 통계 계산
-        const totalMedSec = meds.reduce((acc, cur) => acc + (cur.duration || 60), 0);
+        const totalMedSec = meds.reduce((acc, cur) => acc + (cur.duration || cur.duration_seconds || 60), 0);
         statMed.textContent = `${Math.round(totalMedSec / 60)}분`;
         statLog.textContent = `${logs.length}개`;
         statFav.textContent = `${favs.length}개`;
@@ -347,7 +385,18 @@
         renderTab();
       });
 
-      window.addEventListener('cg-auth:change', renderUserStatus);
+      function handleAuthUpdate(authDetail) {
+        renderUserStatus(authDetail);
+        refreshAll();
+      }
+
+      if (window.CGAuth && typeof window.CGAuth.onChange === 'function') {
+        window.CGAuth.onChange(handleAuthUpdate);
+      }
+      document.addEventListener('cg:auth-changed', (e) => {
+        handleAuthUpdate(e.detail);
+      });
+
       renderUserStatus();
       refreshAll();
     });

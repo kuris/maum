@@ -1057,3 +1057,157 @@ button {
     padding: 20px 16px;
   }
 }
+
+/* ============================================================
+   힐링 배경음악 (풍경 & 빗소리) 플로팅 사운드 위젯
+   ============================================================ */
+.ambient-floating-container {
+  position: fixed;
+  right: 20px;
+  bottom: 24px;
+  z-index: 999;
+}
+
+.ambient-floating-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-full);
+  padding: 10px 18px;
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition-smooth);
+}
+
+.ambient-floating-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--sage-primary);
+}
+
+.ambient-floating-trigger.playing {
+  background: var(--sage-light);
+  border-color: var(--sage-primary);
+  color: var(--sage-dark);
+}
+
+.ambient-trigger-icon {
+  font-size: 1.15rem;
+}
+
+.ambient-popup-card {
+  position: absolute;
+  right: 0;
+  bottom: 56px;
+  width: 290px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: var(--shadow-float);
+  animation: fadeIn 0.25s ease-out;
+}
+
+.ambient-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ambient-close-btn {
+  font-size: 0.9rem;
+  color: var(--text-subtle);
+  padding: 4px;
+  line-height: 1;
+}
+
+.ambient-close-btn:hover {
+  color: var(--text-main);
+}
+
+.ambient-track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.ambient-track-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  transition: var(--transition-fast);
+}
+
+.ambient-track-btn:hover {
+  border-color: var(--sage-primary);
+  background: #fff;
+}
+
+.ambient-track-btn.active {
+  background: var(--sage-light);
+  border-color: var(--sage-primary);
+}
+
+.ambient-track-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.ambient-track-info {
+  flex: 1;
+}
+
+.ambient-track-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.ambient-track-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.ambient-track-status {
+  font-size: 0.75rem;
+  color: var(--sage-dark);
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(74, 107, 93, 0.08);
+}
+
+.ambient-track-btn.active .ambient-track-status {
+  background: var(--sage-primary);
+  color: #fff;
+}
+
+.ambient-volume-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--bg-main);
+  border-radius: var(--radius-xs);
+}
+
+.ambient-volume-bar input[type="range"] {
+  flex: 1;
+  accent-color: var(--sage-primary);
+  cursor: pointer;
+}
+

@@ -138,6 +138,20 @@
         </button>
       </div>
 
+      <!-- 힐링 배경음악 (풍경 · 빗소리) 선택 바 -->
+      <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">호흡 배경음:</span>
+        <button type="button" class="btn-chip active" id="bgm-none-btn" style="cursor: pointer; padding: 5px 14px; font-size: 0.82rem; border-radius: 999px; border: 1px solid var(--sage-dark); background: var(--sage-light); color: var(--text-main);">
+          🔕 없음
+        </button>
+        <button type="button" class="btn-chip" id="bgm-wind-btn" style="cursor: pointer; padding: 5px 14px; font-size: 0.82rem; border-radius: 999px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main);">
+          🎐 산사 풍경
+        </button>
+        <button type="button" class="btn-chip" id="bgm-rain-btn" style="cursor: pointer; padding: 5px 14px; font-size: 0.82rem; border-radius: 999px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main);">
+          🌧️ 고요한 비
+        </button>
+      </div>
+
       <!-- 명상 안내 팁 -->
       <div style="margin-top: 48px; padding-top: 24px; border-top: 1px dashed var(--border); text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
         <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
@@ -161,6 +175,7 @@
   <!-- Scripts -->
   <script src="/js/maum-data.js?v=20260909"></script>
   <script src="/js/meditation.js?v=20260909"></script>
+  <script src="/js/ambient-sound.js?v=20260909"></script>
   <script src="/js/record.js?v=20260909"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -259,6 +274,53 @@
         strikeBowlBtn.addEventListener('click', () => {
           window.MaumMeditation.playChime(null, 1.0);
           if (window.showToast) window.showToast('🪷 맑고 깊은 싱잉볼 소리에 귀를 기울여보세요.');
+        });
+      }
+
+      // 배경음악 (풍경 · 빗소리) 토글 제어
+      const bgmNoneBtn = document.getElementById('bgm-none-btn');
+      const bgmWindBtn = document.getElementById('bgm-wind-btn');
+      const bgmRainBtn = document.getElementById('bgm-rain-btn');
+
+      function updateBgmChips(activeMode) {
+        [bgmNoneBtn, bgmWindBtn, bgmRainBtn].forEach(b => {
+          if (!b) return;
+          b.style.background = 'var(--card-bg)';
+          b.style.borderColor = 'var(--border)';
+          b.classList.remove('active');
+        });
+
+        let target = bgmNoneBtn;
+        if (activeMode === 'windchime') target = bgmWindBtn;
+        else if (activeMode === 'rain') target = bgmRainBtn;
+
+        if (target) {
+          target.classList.add('active');
+          target.style.background = 'var(--sage-light)';
+          target.style.borderColor = 'var(--sage-dark)';
+        }
+      }
+
+      if (bgmNoneBtn && bgmWindBtn && bgmRainBtn) {
+        bgmNoneBtn.addEventListener('click', () => {
+          if (window.MaumAmbient) window.MaumAmbient.stop();
+          updateBgmChips('none');
+        });
+        bgmWindBtn.addEventListener('click', () => {
+          if (window.MaumAmbient) window.MaumAmbient.play('windchime');
+          updateBgmChips('windchime');
+        });
+        bgmRainBtn.addEventListener('click', () => {
+          if (window.MaumAmbient) window.MaumAmbient.play('rain');
+          updateBgmChips('rain');
+        });
+
+        window.addEventListener('maum:ambient-changed', (e) => {
+          if (e.detail && e.detail.isPlaying) {
+            updateBgmChips(e.detail.activeTrackId);
+          } else {
+            updateBgmChips('none');
+          }
         });
       }
 
