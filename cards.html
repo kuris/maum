@@ -20,14 +20,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="/css/style.css?v=20260909e">
-  <link rel="stylesheet" href="/css/cg-auth.css?v=20260909e">
+  <link rel="stylesheet" href="/css/style.css?v=20260910a">
+  <link rel="stylesheet" href="/css/cg-auth.css?v=20260910a">
 
   <!-- Supabase & Auth -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/supabase-config.js?v=20260909e"></script>
-  <script defer src="/js/cg-auth.js?v=20260909e" data-service="maum" data-mount="#cg-auth-slot"></script>
-  <script defer src="/js/track.js?v=20260909e" data-service="maum"></script>
+  <script src="/js/supabase-config.js?v=20260910a"></script>
+  <script defer src="/js/cg-auth.js?v=20260910a" data-service="maum" data-mount="#cg-auth-slot"></script>
+  <script defer src="/js/track.js?v=20260910a" data-service="maum"></script>
 </head>
 <body>
   <div class="wrap">
@@ -128,9 +128,9 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/js/maum-data.js?v=20260909e"></script>
-  <script src="/js/ambient-sound.js?v=20260909e"></script>
-  <script src="/js/record.js?v=20260909e"></script>
+  <script src="/js/maum-data.js?v=20260910a"></script>
+  <script src="/js/ambient-sound.js?v=20260910a"></script>
+  <script src="/js/record.js?v=20260910a"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // 드롭다운
@@ -162,14 +162,15 @@
         sessionDrawn.unshift(card);
 
         // Supabase 클라우드 기록 (로그인 시)
-        if (window.CGAuth && window.CGAuth.user && window.CGAuth.client) {
-          window.CGAuth.client.from('maum_card_logs').insert({
-            user_id: window.CGAuth.user.id,
+        const cn = window.MaumRecord && window.MaumRecord.cloud && window.MaumRecord.cloud();
+        if (cn) {
+          cn.db.from('maum_card_logs').insert({
+            user_id: cn.uid,
             card_key: card.id,
             theme: card.themeLabel,
             title: card.keyword,
             text: card.quote
-          }).then(() => {}).catch(() => {});
+          }).then(() => {}, () => {});
         }
 
         stage.innerHTML = `

@@ -8,6 +8,23 @@
   const STORAGE_LOGS_KEY = 'maum_daily_logs';
   const STORAGE_FAVS_KEY = 'maum_favorites';
 
+  // ------------------------------------------------------------
+  // CGAuth 공개 API 접근자
+  //   CGAuth 에는 .user / .client 속성이 없습니다. 반드시 getUser() / getClient()
+  //   (공통 테이블은 getPublicDb()) 를 호출해야 합니다.
+  //   로그인 전이거나 Supabase 가 없으면 null 을 돌려줍니다.
+  // ------------------------------------------------------------
+  function cloud() {
+    const A = global.CGAuth;
+    if (!A || typeof A.getUser !== 'function') return null;
+    const u = A.getUser();
+    if (!u || !u.id) return null;
+    const c = (typeof A.getPublicDb === 'function' && A.getPublicDb()) ||
+              (typeof A.getClient === 'function' && A.getClient()) || null;
+    if (!c) return null;
+    return { db: c, uid: u.id };
+  }
+
   // 글로벌 토스트 알림 함수
   function showToast(message, duration = 2800) {
     let toast = document.getElementById('maum-toast');
@@ -41,31 +58,34 @@
       created_at: new Date().toISOString()
     };
 
-    // 1. 로컬스토리지 저장
+    // 1. Supabase 클라우드 저장 (로그인 시)
+    let synced = false;
     try {
+      const cn = cloud();
+      if (cn) {
+        const { error } = await cn.db.from('maum_daily_logs').insert({
+          user_id: cn.uid,
+          mood: logItem.mood,
+          note: logItem.note || null,
+          gratitude: logItem.gratitude || null,
+          let_go: logItem.let_go || null,
+          created_at: logItem.created_at
+        });
+        if (error) throw error;
+        synced = true;
+      }
+    } catch (e) {
+      console.warn('[Record] Cloud sync skipped, saved locally:', e);
+    }
+
+    // 2. 로컬스토리지 저장 (_synced 를 남겨 재로그인 시 중복 업로드를 막습니다)
+    try {
+      logItem._synced = synced;
       const logs = JSON.parse(localStorage.getItem(STORAGE_LOGS_KEY) || '[]');
       logs.unshift(logItem);
       localStorage.setItem(STORAGE_LOGS_KEY, JSON.stringify(logs.slice(0, 200)));
     } catch (e) {
       console.warn('[Record] Local storage write error:', e);
-    }
-
-    // 2. Supabase 클라우드 저장 (로그인 시)
-    let synced = false;
-    try {
-      if (global.CGAuth && global.CGAuth.user && global.CGAuth.client) {
-        const client = global.CGAuth.client;
-        const { error } = await client.from('maum_daily_logs').insert({
-          user_id: global.CGAuth.user.id,
-          mood: logItem.mood,
-          note: logItem.note || null,
-          gratitude: logItem.gratitude || null,
-          let_go: logItem.let_go || null
-        });
-        if (!error) synced = true;
-      }
-    } catch (e) {
-      console.warn('[Record] Cloud sync skipped, saved locally:', e);
     }
 
     showToast(synced ? '🌸 마음에 소중히 기록되었습니다 (클라우드 저장)' : '🌸 마음에 소중히 기록되었습니다');
@@ -125,25 +145,34 @@
 
     // Supabase 동기화 (로그인 시)
     try {
-      if (global.CGAuth && global.CGAuth.user && global.CGAuth.client) {
-        const client = global.CGAuth.client;
+      const cn = cloud();
+      if (cn) {
         if (isFavNow) {
-          await client.from('maum_favorites').upsert({
-            user_id: global.CGAuth.user.id,
+          const { error } = await cn.db.from('maum_favorites').upsert({
+            user_id: cn.uid,
             content_type: item.content_type,
             content_key: item.content_key,
             title: item.title,
             text: item.text,
             category: item.category || null
           }, { onConflict: 'user_id,content_type,content_key' });
+          if (error) throw error;
+          // 업로드가 끝난 항목은 _synced 를 남겨 중복 업로드를 막습니다
+          const saved = JSON.parse(localStorage.getItem(STORAGE_FAVS_KEY) || '[]');
+          const hit = saved.find(i => i.content_type === item.content_type && i.content_key === item.content_key);
+          if (hit) {
+            hit._synced = true;
+            localStorage.setItem(STORAGE_FAVS_KEY, JSON.stringify(saved));
+          }
         } else {
-          await client.from('maum_favorites')
+          const { error } = await cn.db.from('maum_favorites')
             .delete()
             .match({
-              user_id: global.CGAuth.user.id,
+              user_id: cn.uid,
               content_type: item.content_type,
               content_key: item.content_key
             });
+          if (error) throw error;
         }
       }
     } catch (e) {
@@ -154,11 +183,23 @@
     return isFavNow;
   }
 
-  // 로그인 시 로컬 데이터를 클라우드로 마이그레이션 안내
-  async function syncLocalToCloud() {
-    if (!global.CGAuth || !global.CGAuth.user || !global.CGAuth.client) return;
-    const client = global.CGAuth.client;
-    const uid = global.CGAuth.user.id;
+  // 로그인 시 로컬 데이터를 클라우드로 마이그레이션
+  //   my.html 과 아래 auth 이벤트 핸들러가 동시에 호출할 수 있어 중복 업로드를 막습니다.
+  let syncInFlight = null;
+  function syncLocalToCloud() {
+    if (syncInFlight) return syncInFlight;
+    syncInFlight = doSyncLocalToCloud().then(
+      (v) => { syncInFlight = null; return v; },
+      (e) => { syncInFlight = null; throw e; }
+    );
+    return syncInFlight;
+  }
+
+  async function doSyncLocalToCloud() {
+    const cn = cloud();
+    if (!cn) return;
+    const client = cn.db;
+    const uid = cn.uid;
 
     // 1. 일기 동기화
     const localLogs = getLocalLogs();
@@ -166,7 +207,7 @@
       for (const log of localLogs) {
         if (log._synced) continue;
         try {
-          await client.from('maum_daily_logs').insert({
+          const { error } = await client.from('maum_daily_logs').insert({
             user_id: uid,
             mood: log.mood,
             note: log.note || null,
@@ -174,7 +215,7 @@
             let_go: log.let_go || null,
             created_at: log.created_at || new Date().toISOString()
           });
-          log._synced = true;
+          if (!error) log._synced = true;
         } catch (_) {}
       }
       localStorage.setItem(STORAGE_LOGS_KEY, JSON.stringify(localLogs));
@@ -186,7 +227,7 @@
       for (const f of favs) {
         if (f._synced) continue;
         try {
-          await client.from('maum_favorites').upsert({
+          const { error } = await client.from('maum_favorites').upsert({
             user_id: uid,
             content_type: f.content_type,
             content_key: f.content_key,
@@ -194,7 +235,7 @@
             text: f.text,
             category: f.category || null
           }, { onConflict: 'user_id,content_type,content_key' });
-          f._synced = true;
+          if (!error) f._synced = true;
         } catch (_) {}
       }
       localStorage.setItem(STORAGE_FAVS_KEY, JSON.stringify(favs));
@@ -217,6 +258,7 @@
 
   global.showToast = showToast;
   global.MaumRecord = {
+    cloud,
     saveDailyLog,
     getLocalLogs,
     getFavorites,

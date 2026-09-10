@@ -290,15 +290,18 @@
     } catch (e) {}
 
     // 2. Supabase 저장 (로그인 시)
+    //    CGAuth 는 .user / .client 속성을 제공하지 않습니다. record.js 의 cloud() 헬퍼를 씁니다.
     try {
-      if (global.CGAuth && global.CGAuth.user && global.CGAuth.client) {
-        const client = global.CGAuth.client;
-        await client.from('maum_meditation_logs').insert({
-          user_id: global.CGAuth.user.id,
+      const cn = global.MaumRecord && global.MaumRecord.cloud && global.MaumRecord.cloud();
+      if (cn) {
+        const { error } = await cn.db.from('maum_meditation_logs').insert({
+          user_id: cn.uid,
           duration_seconds: duration,
           technique: currentTechnique,
-          completed: true
+          completed: true,
+          created_at: logItem.created_at
         });
+        if (error) throw error;
       }
     } catch (e) {
       console.warn('[Meditation] Cloud sync failed, kept locally:', e);
