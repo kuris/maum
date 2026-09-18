@@ -25,6 +25,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="/css/style.css?v=20260910a">
   <link rel="stylesheet" href="/css/cg-auth.css?v=20260910a">
+  <link rel="stylesheet" href="/css/cg-family.css?v=20260910a">
 
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3321070604000141" crossorigin="anonymous"></script>
@@ -33,6 +34,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/supabase-config.js?v=20260910a"></script>
   <script defer src="/js/cg-auth.js?v=20260910a" data-service="maum" data-mount="#cg-auth-slot"></script>
+  <script defer src="/js/cg-family.js?v=20260910a"></script>
   <script defer src="/js/track.js?v=20260910a" data-service="maum"></script>
 </head>
 <body>
@@ -49,23 +51,7 @@
         <div id="cg-auth-slot"></div>
 
         <!-- 패밀리 서비스 메뉴 -->
-        <div class="family-nav-wrap">
-          <button type="button" class="family-btn" id="family-btn">
-            다른 놀자 서비스 ▾
-          </button>
-          <div class="family-dropdown" id="family-dropdown">
-            <a href="https://hanja.chatgpts.kr" target="_blank" rel="noopener">📖 한자야 놀자</a>
-            <a href="https://voca.chatgpts.kr" target="_blank" rel="noopener">⚡ 단어야 놀자</a>
-            <a href="https://history.chatgpts.kr" target="_blank" rel="noopener">📜 역사야 놀자</a>
-            <a href="https://fortune.chatgpts.kr" target="_blank" rel="noopener">🔮 운세야 놀자</a>
-            <a href="https://mind.chatgpts.kr" target="_blank" rel="noopener">🧠 마인드테스트</a>
-            <a href="https://bible.chatgpts.kr" target="_blank" rel="noopener">✝️ 성경아 놀자</a>
-            <a href="https://work.chatgpts.kr" target="_blank" rel="noopener">💼 워크야 놀자</a>
-            <a href="https://money.chatgpts.kr" target="_blank" rel="noopener">💰 머니야 놀자</a>
-            <a href="https://tools.chatgpts.kr" target="_blank" rel="noopener">🛠️ 문서야 놀자</a>
-            <a href="https://chatgpts.kr" target="_blank" rel="noopener">🏠 chatgpts.kr</a>
-          </div>
-        </div>
+        <div data-cg-family data-current="maum"></div>
       </div>
     </header>
 

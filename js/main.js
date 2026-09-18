@@ -3,20 +3,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. 패밀리 사이트 드롭다운 토글
-  const familyBtn = document.getElementById('family-btn');
-  const familyDropdown = document.getElementById('family-dropdown');
-
-  if (familyBtn && familyDropdown) {
-    familyBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      familyDropdown.classList.toggle('show');
-    });
-
-    document.addEventListener('click', () => {
-      familyDropdown.classList.remove('show');
-    });
-  }
+  // 1. 패밀리 사이트 드롭다운 토글 (cg-family.js 가 자체 처리 — 구 바인딩 제거됨)
 
   // 2. 오늘의 마음 카드 렌더링
   renderTodayMindCard();
